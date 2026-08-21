@@ -3,21 +3,18 @@
 import { useEffect, useState } from 'react';
 import { motion, useSpring } from 'motion/react';
 
-export default function CustomCursor() {
+function CustomCursorInner() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const [cursorText, setCursorText] = useState('');
   const [isVisible, setIsVisible] = useState(false);
 
-  const [mounted, setMounted] = useState(false);
-
-  // Smooth out the mouse movement a bit
+  // Smooth out the mouse movement
   const springConfig = { damping: 25, stiffness: 400, mass: 0.5 };
   const cursorX = useSpring(0, springConfig);
   const cursorY = useSpring(0, springConfig);
 
   useEffect(() => {
-    setMounted(true);
     const handleMouseMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
       cursorX.set(e.clientX);
@@ -52,8 +49,6 @@ export default function CustomCursor() {
     };
   }, [cursorX, cursorY, isVisible]);
 
-  if (!mounted) return null;
-
   return (
     <motion.div
       className="fixed top-0 left-0 pointer-events-none z-[100] flex items-center justify-center font-montserrat text-white font-semibold text-xs tracking-widest"
@@ -81,4 +76,16 @@ export default function CustomCursor() {
       </motion.span>
     </motion.div>
   );
+}
+
+export default function CustomCursor() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  return <CustomCursorInner />;
 }

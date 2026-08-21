@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 
-export default function Home() {
+function HomeInner() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -92,6 +92,7 @@ export default function Home() {
                 src="https://picsum.photos/seed/bellhopbed/1000/1200"
                 alt="Student verified identity"
                 fill
+                sizes="(max-width: 768px) 100vw, 55vw"
                 className="object-cover"
                 referrerPolicy="no-referrer"
                 priority
@@ -193,6 +194,7 @@ export default function Home() {
                       src="https://picsum.photos/seed/arro/1000/1000"
                       alt="Academic Passport"
                       fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       className="object-cover"
                       referrerPolicy="no-referrer"
                     />
@@ -221,6 +223,7 @@ export default function Home() {
                       src="https://picsum.photos/seed/coba/1000/1000"
                       alt="Zero-Knowledge Proof"
                       fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       className="object-cover"
                       referrerPolicy="no-referrer"
                     />
@@ -378,4 +381,22 @@ export default function Home() {
       </footer>
     </>
   );
+}
+
+export default function Home() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-[#F8F7F3] flex items-center justify-center">
+        <div className="text-3xl font-playfair font-bold text-[#113221] animate-pulse">EduPass.</div>
+      </div>
+    );
+  }
+
+  return <HomeInner />;
 }
