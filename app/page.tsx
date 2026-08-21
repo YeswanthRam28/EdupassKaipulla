@@ -14,55 +14,44 @@ function HomeInner() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-[#EAE9E4] text-[#131313] font-mono selection:bg-[#FF5C00] selection:text-black">
+    <div className="min-h-screen bg-[#E5E4DF] text-[#131313] font-mono selection:bg-[#FF5C00] selection:text-black">
       <Header />
 
       <main className="w-full">
-        {/* HERO SECTION - Swiss Editorial Grid */}
-        <section className="w-full max-w-[1280px] mx-auto border-b border-[#333333] px-6 md:px-10 py-16 md:py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        {/* HERO SECTION - Exact Match to Screenshot */}
+        <section className="w-full border-b border-[#131313] min-h-[calc(100vh-65px)] flex items-center justify-center px-6 md:px-12 py-16">
+          <div className="w-full max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
-            {/* Left Column: About Paragraph */}
-            <div className="lg:col-span-3 flex flex-col gap-4">
-              <span className="font-mono text-xs font-semibold tracking-[0.15em] uppercase text-[#131313]">
-                [ ABOUT ]
+            {/* Left Column: ABOUT & Description */}
+            <div className="lg:col-span-3 flex flex-col justify-center gap-6">
+              <span className="font-mono text-xs font-semibold tracking-wider uppercase text-[#131313]">
+                ABOUT
               </span>
-              <p className="font-mono text-xs md:text-sm leading-relaxed uppercase text-[#131313]">
-                Official academic reporting layer proving that transcripts are historic, still relevant until... we disrupt proof and access. Do not penalize partners now.
+              <p className="font-mono text-xs md:text-sm leading-relaxed uppercase text-[#131313] max-w-[300px]">
+                BUILDING A PRIVACY-PRESERVING ACADEMIC PASSPORT THAT TURNS TRANSCRIPTS INTO VERIFIABLE, ZERO-KNOWLEDGE PROOFS — SO STUDENTS PROVE WHAT MATTERS WITHOUT REVEALING EVERYTHING ELSE.
               </p>
             </div>
 
             {/* Center Column: PRIVACY PASSPORT Display */}
             <div className="lg:col-span-6 flex flex-col justify-center items-center text-center">
-              <h1 className="font-anton text-[4rem] sm:text-[6.5rem] md:text-[8rem] leading-[0.88] tracking-tight uppercase text-[#131313] select-none">
+              <h1 className="font-anton text-[4.5rem] sm:text-[7rem] md:text-[9.5rem] leading-[0.88] tracking-tight uppercase text-[#131313] select-none">
                 PRIVACY<br />PASSPORT
               </h1>
             </div>
 
-            {/* Right Column: Metadata & List Item */}
-            <div className="lg:col-span-3 flex flex-col justify-between h-full gap-8">
-              <div className="flex flex-col items-end text-right">
-                <span className="font-mono text-xs font-semibold tracking-[0.15em] uppercase text-[#131313]">
-                  ACCEPTED WORLDWIDE
-                </span>
-                <span className="font-mono text-xs text-[#333333] uppercase mt-1">
-                  VERIFIED • ON-CHAIN • PRIVACY-FIRST
+            {/* Right Column: Location Status & Tagline */}
+            <div className="lg:col-span-3 flex flex-col justify-between h-full lg:min-h-[380px] py-4">
+              <div className="text-right">
+                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[#131313]">
+                  LOCATION: INDIA &nbsp; STATUS: LIVE
                 </span>
               </div>
 
-              <div className="border-l border-[#333333] pl-4 py-2 flex flex-col gap-2">
-                <div className="border-b border-[#333333] pb-2 font-mono text-xs font-medium tracking-wider uppercase text-[#131313]">
-                  [01] VERIFIABLE CREDENTIALS
+              <div className="flex flex-col gap-2 mt-12 lg:mt-0">
+                <div className="border-l border-[#131313] pl-4 font-mono text-xs font-semibold leading-snug uppercase text-[#131313]">
+                  DON&apos;T SEND YOUR TRANSCRIPT.<br />PROVE IT.
                 </div>
-                <div className="font-mono text-xs text-[#333333] uppercase">
-                  PROGRAMMABLE ELIGIBILITY PROOFS
-                </div>
-              </div>
-
-              <div className="self-end">
-                <span className="inline-block font-mono text-[11px] font-semibold uppercase tracking-widest border border-[#131313] px-3 py-1.5 bg-[#E2E2E2]">
-                  DON&apos;T SEND YOUR TRANSCRIPT. PROVE IT.
-                </span>
+                <div className="border-b border-[#131313] w-full pt-1" />
               </div>
             </div>
 
@@ -70,7 +59,7 @@ function HomeInner() {
         </section>
 
         {/* MARQUEE BANNER SECTION - Industrial Orange */}
-        <section className="w-full bg-[#FF5C00] border-b border-[#333333] overflow-hidden py-8">
+        <section className="w-full bg-[#FF5C00] border-b border-[#131313] overflow-hidden py-8">
           <div className="animate-marquee font-archivo font-extrabold text-2xl md:text-4xl tracking-tight uppercase text-[#131313] flex gap-8">
             <span>GETTING A TRANSCRIPT TAKES WEEKS. VERIFYING ONE TAKES ANOTHER. EDUPASS TAKES SECONDS. •</span>
             <span>GETTING A TRANSCRIPT TAKES WEEKS. VERIFYING ONE TAKES ANOTHER. EDUPASS TAKES SECONDS. •</span>
@@ -80,8 +69,8 @@ function HomeInner() {
         </section>
 
         {/* TWO COLUMN STATEMENT SECTION */}
-        <section className="w-full max-w-[1280px] mx-auto border-b border-[#333333]">
-          <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#333333]">
+        <section className="w-full max-w-[1440px] mx-auto border-b border-[#131313]">
+          <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#131313]">
             <div className="p-10 md:p-16 flex items-center">
               <h2 className="font-archivo font-bold text-3xl md:text-5xl leading-[1.1] uppercase text-[#131313]">
                 PROVE WHAT MATTERS WITHOUT REVEALING EVERYTHING ELSE
@@ -96,11 +85,11 @@ function HomeInner() {
         </section>
 
         {/* NUMBERED FEATURE BREAKDOWN SECTION ([01] to [05]) */}
-        <section className="w-full max-w-[1280px] mx-auto border-b border-[#333333] px-6 md:px-10 py-16 md:py-24">
+        <section className="w-full max-w-[1440px] mx-auto border-b border-[#131313] px-6 md:px-12 py-16 md:py-24">
           <div className="flex flex-col">
             
             {/* Row 1 */}
-            <div className="grid grid-cols-1 md:grid-cols-12 border-b border-[#333333] py-6 md:py-8 items-start gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-12 border-b border-[#131313] py-6 md:py-8 items-start gap-4">
               <div className="md:col-span-2 font-mono text-xs font-semibold tracking-wider text-[#131313]">
                 [01]
               </div>
@@ -108,14 +97,14 @@ function HomeInner() {
                 <h3 className="font-archivo font-semibold text-xl md:text-2xl uppercase text-[#131313]">
                   VERIFIABLE CREDENTIALS
                 </h3>
-                <p className="font-mono text-xs md:text-sm text-[#333333] max-w-xl">
+                <p className="font-mono text-xs md:text-sm text-[#333333] max-w-xl uppercase">
                   Building clear cryptographic commitments, strong payload privacy, and digital identities that feel distinctive and intentional.
                 </p>
               </div>
             </div>
 
             {/* Row 2 */}
-            <div className="grid grid-cols-1 md:grid-cols-12 border-b border-[#333333] py-6 md:py-8 items-start gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-12 border-b border-[#131313] py-6 md:py-8 items-start gap-4">
               <div className="md:col-span-2 font-mono text-xs font-semibold tracking-wider text-[#131313]">
                 [02]
               </div>
@@ -123,14 +112,14 @@ function HomeInner() {
                 <h3 className="font-archivo font-semibold text-xl md:text-2xl uppercase text-[#131313]">
                   ZERO-KNOWLEDGE PROOFS
                 </h3>
-                <p className="font-mono text-xs md:text-sm text-[#333333] max-w-xl">
+                <p className="font-mono text-xs md:text-sm text-[#333333] max-w-xl uppercase">
                   Developing privacy-first eligibility proofs with zero-knowledge circuits, smooth performance, and precise execution.
                 </p>
               </div>
             </div>
 
             {/* Row 3 */}
-            <div className="grid grid-cols-1 md:grid-cols-12 border-b border-[#333333] py-6 md:py-8 items-start gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-12 border-b border-[#131313] py-6 md:py-8 items-start gap-4">
               <div className="md:col-span-2 font-mono text-xs font-semibold tracking-wider text-[#131313]">
                 [03]
               </div>
@@ -138,14 +127,14 @@ function HomeInner() {
                 <h3 className="font-archivo font-semibold text-xl md:text-2xl uppercase text-[#131313]">
                   AI MOBILITY AGENT
                 </h3>
-                <p className="font-mono text-xs md:text-sm text-[#333333] max-w-xl">
+                <p className="font-mono text-xs md:text-sm text-[#333333] max-w-xl uppercase">
                   Using intelligent parsing to evaluate admission criteria, structure academic equivalencies, and streamline international mobility.
                 </p>
               </div>
             </div>
 
             {/* Row 4 */}
-            <div className="grid grid-cols-1 md:grid-cols-12 border-b border-[#333333] py-6 md:py-8 items-start gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-12 border-b border-[#131313] py-6 md:py-8 items-start gap-4">
               <div className="md:col-span-2 font-mono text-xs font-semibold tracking-wider text-[#131313]">
                 [04]
               </div>
@@ -153,7 +142,7 @@ function HomeInner() {
                 <h3 className="font-archivo font-semibold text-xl md:text-2xl uppercase text-[#131313]">
                   INSTANT VERIFICATION
                 </h3>
-                <p className="font-mono text-xs md:text-sm text-[#333333] max-w-xl">
+                <p className="font-mono text-xs md:text-sm text-[#333333] max-w-xl uppercase">
                   Translating university records into instant verifier outputs that execute on EVM devnets and public testnets without latency.
                 </p>
               </div>
@@ -168,7 +157,7 @@ function HomeInner() {
                 <h3 className="font-archivo font-semibold text-xl md:text-2xl uppercase text-[#131313]">
                   CREDENTIAL FIREWALL
                 </h3>
-                <p className="font-mono text-xs md:text-sm text-[#333333] max-w-xl">
+                <p className="font-mono text-xs md:text-sm text-[#333333] max-w-xl uppercase">
                   Shaping student-owned records into secure off-chain storage containers that stay flexible, purposeful, and immune to tampering.
                 </p>
               </div>
@@ -178,8 +167,8 @@ function HomeInner() {
         </section>
 
         {/* PASSPORT & GRADE BREAKDOWN SECTION */}
-        <section className="w-full max-w-[1280px] mx-auto border-b border-[#333333]">
-          <div className="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-[#333333]">
+        <section className="w-full max-w-[1440px] mx-auto border-b border-[#131313]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-[#131313]">
             
             {/* Left Column: PASSPORT Title & Stamp */}
             <div className="lg:col-span-5 p-10 md:p-16 flex flex-col justify-between gap-12">
@@ -202,28 +191,28 @@ function HomeInner() {
 
             {/* Right Column: Grade Breakdown List */}
             <div className="lg:col-span-7 p-10 md:p-16 flex flex-col gap-8 justify-center">
-              <p className="font-mono text-sm md:text-base leading-relaxed text-[#131313]">
+              <p className="font-mono text-sm md:text-base leading-relaxed uppercase text-[#131313]">
                 A single verifiable credential layer that travels with the student — across universities, employers, and borders.
               </p>
 
-              <div className="flex flex-col border-t border-[#333333]">
-                <div className="flex justify-between items-center py-3 border-b border-[#333333] font-mono text-xs md:text-sm">
+              <div className="flex flex-col border-t border-[#131313]">
+                <div className="flex justify-between items-center py-3 border-b border-[#131313] font-mono text-xs md:text-sm">
                   <span className="font-archivo font-bold text-base uppercase text-[#131313]">KORMAN</span>
                   <span className="font-bold text-[#131313]">95</span>
                 </div>
-                <div className="flex justify-between items-center py-3 border-b border-[#333333] font-mono text-xs md:text-sm">
+                <div className="flex justify-between items-center py-3 border-b border-[#131313] font-mono text-xs md:text-sm">
                   <span className="font-archivo font-bold text-base uppercase text-[#131313]">DRUMWRIGHT</span>
                   <span className="font-bold text-[#131313]">92</span>
                 </div>
-                <div className="flex justify-between items-center py-3 border-b border-[#333333] font-mono text-xs md:text-sm">
+                <div className="flex justify-between items-center py-3 border-b border-[#131313] font-mono text-xs md:text-sm">
                   <span className="font-archivo font-bold text-base uppercase text-[#131313]">MILTURGE</span>
                   <span className="font-bold text-[#131313]">92</span>
                 </div>
-                <div className="flex justify-between items-center py-3 border-b border-[#333333] font-mono text-xs md:text-sm">
+                <div className="flex justify-between items-center py-3 border-b border-[#131313] font-mono text-xs md:text-sm">
                   <span className="font-archivo font-bold text-base uppercase text-[#131313]">TSENG</span>
                   <span className="font-bold text-[#131313]">85</span>
                 </div>
-                <div className="flex justify-between items-center py-3 border-b border-[#333333] font-mono text-xs md:text-sm">
+                <div className="flex justify-between items-center py-3 border-b border-[#131313] font-mono text-xs md:text-sm">
                   <span className="font-archivo font-bold text-base uppercase text-[#131313]">PRICE</span>
                   <span className="font-bold text-[#131313]">85+</span>
                 </div>
@@ -234,7 +223,7 @@ function HomeInner() {
         </section>
 
         {/* INTERACTIVE WEB3 CARDS SECTION ("DON'T SEND YOUR TRANSCRIPT. PROVE IT.") */}
-        <section className="w-full max-w-[1280px] mx-auto border-b border-[#333333] px-6 md:px-10 py-16 md:py-24">
+        <section className="w-full max-w-[1440px] mx-auto border-b border-[#131313] px-6 md:px-12 py-16 md:py-24">
           <div className="flex flex-col gap-12">
             
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-2 border-[#131313] pb-6">
@@ -249,7 +238,7 @@ function HomeInner() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               
               {/* Card 1: DASH / ISSUE */}
-              <div className="bg-[#E2E2E2] border border-[#131313] p-8 flex flex-col justify-between gap-6 hover:border-[#FF5C00] transition-colors group">
+              <div className="bg-[#E2E1DC] border border-[#131313] p-8 flex flex-col justify-between gap-6 hover:border-[#FF5C00] transition-colors group">
                 <div className="flex justify-between items-start">
                   <span className="font-mono text-xs font-bold text-[#131313]">[ 01 ]</span>
                   <Link 
@@ -266,14 +255,14 @@ function HomeInner() {
                   <span className="font-archivo font-semibold text-xs text-[#6B7280] uppercase tracking-wider block mt-1">
                     INSTITUTION ISSUANCE PORTAL
                   </span>
-                  <p className="font-mono text-xs text-[#131313] leading-relaxed mt-4">
+                  <p className="font-mono text-xs text-[#131313] leading-relaxed uppercase mt-4">
                     A custom Web3 workflow shaped for modern universities and accredited institutions. Issue cryptographically signed commitments on-chain in seconds.
                   </p>
                 </div>
               </div>
 
               {/* Card 2: RACEPOINT / VERIFY */}
-              <div className="bg-[#E2E2E2] border border-[#131313] p-8 flex flex-col justify-between gap-6 hover:border-[#FF5C00] transition-colors group">
+              <div className="bg-[#E2E1DC] border border-[#131313] p-8 flex flex-col justify-between gap-6 hover:border-[#FF5C00] transition-colors group">
                 <div className="flex justify-between items-start">
                   <span className="font-mono text-xs font-bold text-[#131313]">[ 02 ]</span>
                   <Link 
@@ -290,14 +279,14 @@ function HomeInner() {
                   <span className="font-archivo font-semibold text-xs text-[#6B7280] uppercase tracking-wider block mt-1">
                     PUBLIC VERIFICATION SYSTEM
                   </span>
-                  <p className="font-mono text-xs text-[#131313] leading-relaxed mt-4">
+                  <p className="font-mono text-xs text-[#131313] leading-relaxed uppercase mt-4">
                     Instant verifier portal with off-chain JSON hash integrity verification against on-chain smart contract state. Zero phone calls, zero waiting.
                   </p>
                 </div>
               </div>
 
               {/* Card 3: PASSPORT / DASHBOARD */}
-              <div className="bg-[#E2E2E2] border border-[#131313] p-8 flex flex-col justify-between gap-6 hover:border-[#FF5C00] transition-colors group">
+              <div className="bg-[#E2E1DC] border border-[#131313] p-8 flex flex-col justify-between gap-6 hover:border-[#FF5C00] transition-colors group">
                 <div className="flex justify-between items-start">
                   <span className="font-mono text-xs font-bold text-[#131313]">[ 03 ]</span>
                   <Link 
@@ -314,7 +303,7 @@ function HomeInner() {
                   <span className="font-archivo font-semibold text-xs text-[#6B7280] uppercase tracking-wider block mt-1">
                     STUDENT CREDENTIAL HUB
                   </span>
-                  <p className="font-mono text-xs text-[#131313] leading-relaxed mt-4">
+                  <p className="font-mono text-xs text-[#131313] leading-relaxed uppercase mt-4">
                     Student dashboard containing verified academic records, cryptographic commitments, and zero-knowledge eligibility proof generators.
                   </p>
                 </div>
@@ -326,8 +315,8 @@ function HomeInner() {
         </section>
 
         {/* GIANT ORANGE FOOTER & CTA SECTION (#FF5C00) */}
-        <footer className="w-full bg-[#FF5C00] border-t border-[#333333] text-[#131313] pt-16 md:pt-24 pb-8">
-          <div className="max-w-[1280px] mx-auto px-6 md:px-10 flex flex-col gap-16">
+        <footer className="w-full bg-[#FF5C00] border-t border-[#131313] text-[#131313] pt-16 md:pt-24 pb-8">
+          <div className="max-w-[1440px] mx-auto px-6 md:px-12 flex flex-col gap-16">
             
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
               
