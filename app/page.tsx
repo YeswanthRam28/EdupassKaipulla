@@ -1,25 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Link from 'next/link';
 
-function HomeInner() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
-
+export default function Home() {
   return (
     <div className="min-h-screen bg-[#E5E4DF] text-[#131313] font-mono selection:bg-[#FF5C00] selection:text-black">
       <Header />
 
       <main className="w-full">
-        {/* HERO SECTION - Exact Match to Screenshot */}
-        <section className="w-full border-b border-[#131313] min-h-[calc(100vh-65px)] flex items-center justify-center px-6 md:px-12 py-16">
+        {/* HERO SECTION - Exact Match to Design Mockup */}
+        <section className="w-full border-b border-[#131313] px-6 md:px-12 py-16 md:py-24">
           <div className="w-full max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
             {/* Left Column: ABOUT & Description */}
@@ -27,27 +18,27 @@ function HomeInner() {
               <span className="font-mono text-xs font-semibold tracking-wider uppercase text-[#131313]">
                 ABOUT
               </span>
-              <p className="font-mono text-xs md:text-sm leading-relaxed uppercase text-[#131313] max-w-[300px]">
+              <p className="font-mono text-xs md:text-sm leading-relaxed uppercase text-[#131313] max-w-[320px]">
                 BUILDING A PRIVACY-PRESERVING ACADEMIC PASSPORT THAT TURNS TRANSCRIPTS INTO VERIFIABLE, ZERO-KNOWLEDGE PROOFS — SO STUDENTS PROVE WHAT MATTERS WITHOUT REVEALING EVERYTHING ELSE.
               </p>
             </div>
 
             {/* Center Column: PRIVACY PASSPORT Display */}
-            <div className="lg:col-span-6 flex flex-col justify-center items-center text-center">
+            <div className="lg:col-span-6 flex flex-col justify-center items-center text-center py-4">
               <h1 className="font-anton text-[4.5rem] sm:text-[7rem] md:text-[9.5rem] leading-[0.88] tracking-tight uppercase text-[#131313] select-none">
                 PRIVACY<br />PASSPORT
               </h1>
             </div>
 
             {/* Right Column: Location Status & Tagline */}
-            <div className="lg:col-span-3 flex flex-col justify-between h-full lg:min-h-[380px] py-4">
+            <div className="lg:col-span-3 flex flex-col justify-between items-end h-full gap-12 lg:gap-24 py-2">
               <div className="text-right">
                 <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[#131313]">
                   LOCATION: INDIA &nbsp; STATUS: LIVE
                 </span>
               </div>
 
-              <div className="flex flex-col gap-2 mt-12 lg:mt-0">
+              <div className="flex flex-col gap-2 w-full max-w-[240px]">
                 <div className="border-l border-[#131313] pl-4 font-mono text-xs font-semibold leading-snug uppercase text-[#131313]">
                   DON&apos;T SEND YOUR TRANSCRIPT.<br />PROVE IT.
                 </div>
@@ -361,8 +352,4 @@ function HomeInner() {
       </main>
     </div>
   );
-}
-
-export default function Home() {
-  return <HomeInner />;
 }
