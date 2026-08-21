@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { keccak256, stringToBytes } from 'viem';
 import { CREDENTIAL_REGISTRY_ADDRESS, CREDENTIAL_REGISTRY_ABI } from '@/web3/contracts';
-import { Building2, ShieldCheck, CheckCircle2, Copy, AlertTriangle } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, Copy, AlertTriangle, Building2 } from 'lucide-react';
 
 function IssueCredentialFormInner() {
   const { isConnected, address } = useAccount();
@@ -68,31 +68,31 @@ function IssueCredentialFormInner() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-[#113221]/10">
-      <div className="flex items-center space-x-3 mb-6">
-        <div className="w-12 h-12 rounded-2xl bg-[#113221] flex items-center justify-center text-white">
-          <Building2 className="w-6 h-6 text-[#E85D34]" />
+    <div className="w-full max-w-3xl mx-auto bg-[#E2E2E2] border-2 border-[#131313] p-8 md:p-12 space-y-8 font-mono">
+      <div className="flex items-center gap-4 border-b border-[#131313] pb-6">
+        <div className="w-12 h-12 bg-[#FF5C00] border border-[#131313] flex items-center justify-center text-[#131313] font-bold">
+          <Building2 className="w-6 h-6" />
         </div>
         <div>
-          <h2 className="text-2xl font-montserrat font-bold text-[#113221]">
+          <span className="text-xs font-bold tracking-widest text-[#FF5C00] uppercase block">
+            [ INSTITUTION ISSUANCE PORTAL ]
+          </span>
+          <h2 className="text-2xl md:text-3xl font-archivo font-bold uppercase text-[#131313]">
             Issue Academic Credential
           </h2>
-          <p className="text-xs font-inter text-[#113221]/70">
-            Register cryptographically hashed credential commitments on-chain. Zero PII stored on blockchain.
-          </p>
         </div>
       </div>
 
       {!isConnected ? (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-amber-900 text-sm font-inter flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
-          <span>Please connect your issuing institution wallet using the <strong>Connect Wallet</strong> button in the top header before proceeding.</span>
+        <div className="bg-[#FF5C00] border border-[#131313] p-6 text-[#131313] text-xs font-mono uppercase flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 shrink-0" />
+          <span>PLEASE CONNECT YOUR INSTITUTION WALLET USING THE CONNECT WALLET BUTTON BEFORE PROCEEDING.</span>
         </div>
       ) : (
         <form onSubmit={handleCreateCredential} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-montserrat font-bold uppercase tracking-wider text-[#113221] mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#131313] mb-2">
                 Credential / Student ID
               </label>
               <input
@@ -100,13 +100,13 @@ function IssueCredentialFormInner() {
                 value={studentId}
                 onChange={(e) => setStudentId(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#E85D34]"
+                className="w-full bg-[#EAE9E4] px-4 py-3 border border-[#131313] font-mono text-xs focus:outline-none focus:border-[#FF5C00] uppercase"
                 placeholder="e.g. EDU-2026-001"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-montserrat font-bold uppercase tracking-wider text-[#113221] mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#131313] mb-2">
                 Degree / Qualification
               </label>
               <input
@@ -114,13 +114,13 @@ function IssueCredentialFormInner() {
                 value={degree}
                 onChange={(e) => setDegree(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 font-inter text-sm focus:outline-none focus:ring-2 focus:ring-[#E85D34]"
+                className="w-full bg-[#EAE9E4] px-4 py-3 border border-[#131313] font-mono text-xs focus:outline-none focus:border-[#FF5C00] uppercase"
                 placeholder="e.g. B.Tech Computer Science"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-montserrat font-bold uppercase tracking-wider text-[#113221] mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#131313] mb-2">
                 CGPA (10-Point Scale)
               </label>
               <input
@@ -131,13 +131,13 @@ function IssueCredentialFormInner() {
                 value={cgpa}
                 onChange={(e) => setCgpa(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#E85D34]"
+                className="w-full bg-[#EAE9E4] px-4 py-3 border border-[#131313] font-mono text-xs focus:outline-none focus:border-[#FF5C00]"
                 placeholder="8.50"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-montserrat font-bold uppercase tracking-wider text-[#113221] mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#131313] mb-2">
                 Total Credits Earned
               </label>
               <input
@@ -145,22 +145,22 @@ function IssueCredentialFormInner() {
                 value={credits}
                 onChange={(e) => setCredits(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#E85D34]"
+                className="w-full bg-[#EAE9E4] px-4 py-3 border border-[#131313] font-mono text-xs focus:outline-none focus:border-[#FF5C00]"
                 placeholder="142"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-montserrat font-bold uppercase tracking-wider text-[#113221] mb-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#131313] mb-2">
               Student Wallet Address (Optional)
             </label>
             <input
               type="text"
               value={studentWallet}
               onChange={(e) => setStudentWallet(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#E85D34]"
-              placeholder="0x... (Defaults to your connected wallet if empty)"
+              className="w-full bg-[#EAE9E4] px-4 py-3 border border-[#131313] font-mono text-xs focus:outline-none focus:border-[#FF5C00]"
+              placeholder="0x... (Defaults to issuer wallet if empty)"
             />
           </div>
 
@@ -168,15 +168,15 @@ function IssueCredentialFormInner() {
             <button
               type="submit"
               disabled={isPending || isConfirming}
-              className="w-full bg-[#113221] hover:bg-[#1a442e] text-white font-montserrat font-semibold py-4 rounded-xl shadow-lg transition-all duration-200 flex items-center justify-center space-x-3 disabled:opacity-50"
+              className="w-full bg-[#131313] hover:bg-[#FF5C00] text-white hover:text-black font-mono font-bold text-xs uppercase tracking-widest py-4 border border-[#131313] transition-all flex items-center justify-center space-x-3 cursor-pointer disabled:opacity-50"
             >
-              <ShieldCheck className="w-5 h-5 text-[#E85D34]" />
+              <ShieldCheck className="w-4 h-4" />
               <span>
                 {isPending
-                  ? 'Awaiting MetaMask Approval...'
+                  ? 'AWAITING METAMASK APPROVAL...'
                   : isConfirming
-                  ? 'Confirming On-Chain Transaction...'
-                  : 'Register Credential On-Chain'}
+                  ? 'CONFIRMING ON-CHAIN TRANSACTION...'
+                  : 'REGISTER CREDENTIAL ON-CHAIN'}
               </span>
             </button>
           </div>
@@ -184,42 +184,42 @@ function IssueCredentialFormInner() {
       )}
 
       {hash && (
-        <div className="mt-8 bg-emerald-50 border border-emerald-200 rounded-2xl p-6 text-[#113221] space-y-3">
-          <div className="flex items-center space-x-2 text-emerald-800 font-montserrat font-bold text-sm">
-            <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-            <span>Transaction Broadcasted to Blockchain!</span>
+        <div className="bg-[#EAE9E4] border border-[#131313] p-6 space-y-4 font-mono text-xs">
+          <div className="flex items-center space-x-2 font-bold uppercase text-[#131313]">
+            <CheckCircle2 className="w-4 h-4 text-[#FF5C00]" />
+            <span>TRANSACTION BROADCASTED TO BLOCKCHAIN</span>
           </div>
 
-          <p className="text-xs font-mono break-all text-gray-700 bg-white p-3 rounded-lg border border-emerald-100">
-            <strong>Tx Hash:</strong> {hash}
+          <p className="break-all bg-[#E2E2E2] p-3 border border-[#131313]">
+            <strong>TX HASH:</strong> {hash}
           </p>
 
           {isConfirming && (
-            <p className="text-xs font-inter text-emerald-700 animate-pulse">
-              Waiting for block confirmation on Anvil Local Devnet...
+            <p className="text-[#FF5C00] font-bold uppercase animate-pulse">
+              WAITING FOR BLOCK CONFIRMATION...
             </p>
           )}
 
           {isConfirmed && (
-            <div className="mt-4 pt-4 border-t border-emerald-200 space-y-4">
-              <span className="inline-block bg-emerald-600 text-white font-montserrat text-xs font-bold px-3 py-1 rounded-full">
+            <div className="pt-4 border-t border-[#131313] space-y-4">
+              <span className="inline-block bg-[#131313] text-white font-mono text-xs font-bold px-3 py-1 border border-[#131313] uppercase">
                 ✓ CONFIRMED ON-CHAIN
               </span>
 
               {generatedPayload && (
-                <div className="bg-[#113221] text-[#F8F7F3] p-4 rounded-xl font-mono text-xs space-y-2 relative">
-                  <div className="flex justify-between items-center text-gray-400 border-b border-gray-700 pb-2">
-                    <span>Off-Chain Credential Payload (Keep Confidential)</span>
+                <div className="bg-[#131313] text-white p-4 border border-[#131313] font-mono text-xs space-y-2 relative">
+                  <div className="flex justify-between items-center border-b border-gray-700 pb-2">
+                    <span className="text-[#FF5C00] font-bold uppercase">OFF-CHAIN PAYLOAD (KEEP CONFIDENTIAL)</span>
                     <button
                       onClick={() => copyToClipboard(generatedPayload.rawJson)}
-                      className="flex items-center space-x-1 text-emerald-400 hover:text-white transition-colors"
+                      className="flex items-center space-x-1 text-white hover:text-[#FF5C00] transition-colors"
                     >
                       <Copy className="w-3.5 h-3.5" />
-                      <span>{copiedPayload ? 'Copied!' : 'Copy JSON'}</span>
+                      <span>{copiedPayload ? 'COPIED!' : 'COPY JSON'}</span>
                     </button>
                   </div>
-                  <div><strong>Credential ID (bytes32):</strong> {generatedPayload.credentialIdBytes32}</div>
-                  <div><strong>Commitment Hash (bytes32):</strong> {generatedPayload.commitmentBytes32}</div>
+                  <div><strong>CREDENTIAL ID:</strong> {generatedPayload.credentialIdBytes32}</div>
+                  <div><strong>COMMITMENT HASH:</strong> {generatedPayload.commitmentBytes32}</div>
                   <pre className="text-gray-300 overflow-x-auto text-[11px] pt-2">
                     {JSON.stringify(generatedPayload, null, 2)}
                   </pre>
@@ -231,8 +231,8 @@ function IssueCredentialFormInner() {
       )}
 
       {error && (
-        <div className="mt-6 bg-red-50 border border-red-200 rounded-2xl p-4 text-red-800 text-xs font-mono space-y-1">
-          <strong>Transaction Error:</strong>
+        <div className="bg-red-100 border border-red-500 p-4 text-red-900 text-xs font-mono space-y-1">
+          <strong>TRANSACTION ERROR:</strong>
           <p>{error.message}</p>
         </div>
       )}
@@ -248,7 +248,7 @@ export default function IssueCredentialForm() {
   }, []);
 
   if (!mounted) {
-    return <div className="max-w-3xl mx-auto bg-white rounded-3xl p-12 shadow-xl border border-[#113221]/10 min-h-[300px] animate-pulse" />;
+    return <div className="w-full max-w-3xl mx-auto bg-[#E2E2E2] border-2 border-[#131313] p-12 min-h-[300px] animate-pulse" />;
   }
 
   return <IssueCredentialFormInner />;

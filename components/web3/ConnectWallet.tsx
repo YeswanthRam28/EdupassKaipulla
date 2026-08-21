@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
-import { Wallet, LogOut, CheckCircle2, Loader2 } from 'lucide-react';
+import { LogOut, CheckCircle2, Loader2 } from 'lucide-react';
 
 function ConnectWalletInner() {
   const { address, isConnected, chain } = useAccount();
@@ -16,7 +16,6 @@ function ConnectWalletInner() {
       const ethereum = typeof window !== 'undefined' ? (window as any).ethereum : null;
 
       if (ethereum) {
-        // Handle multiple injected wallet extensions
         if (ethereum.providers?.length) {
           const metaMaskProvider = ethereum.providers.find((p: any) => p.isMetaMask) || ethereum.providers[0];
           await metaMaskProvider.request({ method: 'eth_requestAccounts' });
@@ -24,7 +23,6 @@ function ConnectWalletInner() {
           await ethereum.request({ method: 'eth_requestAccounts' });
         }
 
-        // Connect Wagmi state
         const targetConnector = connectors[0];
         if (targetConnector) {
           await connectAsync({ connector: targetConnector });
@@ -48,13 +46,13 @@ function ConnectWalletInner() {
   if (isConnected && address) {
     return (
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2 bg-[#113221] text-white px-4 py-2 rounded-full font-montserrat text-xs font-semibold shadow-sm border border-[#113221]/30">
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+        <div className="flex items-center gap-2 bg-[#131313] text-white px-4 py-2 border border-[#131313] font-mono text-xs font-semibold tracking-wider">
+          <CheckCircle2 className="w-3.5 h-3.5 text-[#FF5C00]" />
           <span>{address.slice(0, 6)}...{address.slice(-4)}</span>
           <button
             onClick={() => disconnect()}
             title="Disconnect Wallet"
-            className="ml-1 text-gray-300 hover:text-red-400 transition-colors p-0.5"
+            className="ml-2 text-gray-400 hover:text-[#FF5C00] transition-colors p-0.5"
           >
             <LogOut className="w-3.5 h-3.5" />
           </button>
@@ -69,18 +67,15 @@ function ConnectWalletInner() {
     <button
       onClick={handleConnect}
       disabled={isLoading}
-      className="inline-flex items-center gap-2 bg-[#E85D34] hover:bg-[#d44c25] text-white font-montserrat font-semibold text-xs px-5 py-2.5 rounded-full transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 disabled:opacity-60"
+      className="inline-flex items-center gap-2 bg-[#131313] hover:bg-[#FF5C00] text-white hover:text-black font-mono font-semibold text-xs tracking-wider uppercase px-5 py-2.5 border border-[#131313] transition-all duration-200 disabled:opacity-60 cursor-pointer"
     >
       {isLoading ? (
         <>
           <Loader2 className="w-4 h-4 animate-spin" />
-          <span>Connecting...</span>
+          <span>CONNECTING...</span>
         </>
       ) : (
-        <>
-          <Wallet className="w-4 h-4" />
-          <span>Connect Wallet</span>
-        </>
+        <span>CONNECT WALLET</span>
       )}
     </button>
   );
@@ -95,7 +90,7 @@ export default function ConnectWallet() {
 
   if (!mounted) {
     return (
-      <div className="h-10 w-36 bg-gray-200/50 animate-pulse rounded-full" />
+      <div className="h-10 w-36 bg-[#131313]/10 animate-pulse border border-[#131313]" />
     );
   }
 

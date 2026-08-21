@@ -1,402 +1,379 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
-import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 
 function HomeInner() {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Prevent scrolling while loading
-    document.body.style.overflow = 'hidden';
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-      document.body.style.overflow = '';
-      window.scrollTo(0, 0);
-    }, 2500);
-    
-    return () => {
-      clearTimeout(timer);
-      document.body.style.overflow = '';
-    };
-  }, []);
-
-  // Parallax hooks for Hero
-  const heroRef = useRef(null);
-  const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroImageY = useTransform(heroScroll, [0, 1], ["0%", "30%"]);
-  const heroTextY = useTransform(heroScroll, [0, 1], ["0%", "50%"]);
-  const heroOpacity = useTransform(heroScroll, [0, 1], [1, 0]);
-
-  // Horizontal Scroll hooks
-  const horizontalRef = useRef(null);
-  const { scrollYProgress: horizontalScroll } = useScroll({ 
-    target: horizontalRef,
-    offset: ["start start", "end end"]
-  });
-  // Map scroll progress (0 to 1) to horizontal translation (0% to -50%)
-  const horizontalX = useTransform(horizontalScroll, [0, 1], ["0%", "-50%"]);
-
-  return (
-    <>
-      <AnimatePresence>
-        {isLoading && (
-          <motion.div
-            key="preloader"
-            className="fixed inset-0 z-[1000] bg-[#113221] flex flex-col items-center justify-center text-white"
-            exit={{ y: "-100%", transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } }}
-          >
-            <div className="overflow-hidden">
-              <motion.div
-                initial={{ y: "100%" }}
-                animate={{ y: "0%" }}
-                transition={{ duration: 1, ease: [0.76, 0, 0.24, 1] }}
-                className="text-5xl md:text-7xl font-playfair font-bold tracking-tight"
-              >
-                EduPass.
-              </motion.div>
-            </div>
-            {/* Loading progress bar */}
-            <div className="absolute bottom-12 w-64 h-[1px] bg-white/20 overflow-hidden">
-              <motion.div
-                initial={{ x: "-100%" }}
-                animate={{ x: "0%" }}
-                transition={{ duration: 2, ease: "easeInOut" }}
-                className="w-full h-full bg-white"
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <Header />
-      <main className="min-h-screen bg-[#F8F7F3]">
-        
-        {/* HERO SECTION - Parallax & Mask Reveals */}
-        <section ref={heroRef} className="relative pt-32 pb-24 px-6 md:px-12 flex flex-col md:flex-row min-h-screen items-center overflow-hidden">
-          <motion.div 
-            style={{ y: heroImageY, opacity: heroOpacity }}
-            className="w-full md:w-[55%] h-[60vh] md:h-[80vh] relative mt-12 md:mt-0"
-          >
-            {/* Image Mask Reveal */}
-            <motion.div
-              initial={{ clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0 100%)" }}
-              animate={{ clipPath: isLoading ? "polygon(0 100%, 100% 100%, 100% 100%, 0 100%)" : "polygon(0 0, 100% 0, 100% 100%, 0 100%)" }}
-              transition={{ duration: 1.5, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
-              className="w-full h-full relative"
-            >
-              <Image 
-                src="https://picsum.photos/seed/bellhopbed/1000/1200"
-                alt="Student verified identity"
-                fill
-                sizes="(max-width: 768px) 100vw, 55vw"
-                className="object-cover"
-                referrerPolicy="no-referrer"
-                priority
-              />
-            </motion.div>
-          </motion.div>
-          
-          <motion.div 
-            style={{ y: heroTextY }}
-            className="w-full md:w-[45%] flex flex-col justify-center pl-0 md:pl-12 lg:pl-24 mt-16 md:mt-0"
-          >
-            <div className="relative inline-block max-w-xl">
-              <h1 className="text-[3rem] md:text-[4rem] font-montserrat font-semibold leading-[1.1] text-[#113221] relative z-10">
-                <span className="block overflow-hidden">
-                  <motion.span 
-                    initial={{ y: "100%" }} 
-                    animate={{ y: isLoading ? "100%" : "0%" }} 
-                    transition={{ duration: 0.8, delay: 0.3, ease: [0.76, 0, 0.24, 1] }} 
-                    className="block"
-                  >
-                    It&apos;s about so much
-                  </motion.span>
-                </span>
-                <span className="block overflow-hidden pt-2">
-                  <motion.span 
-                    initial={{ y: "100%" }} 
-                    animate={{ y: isLoading ? "100%" : "0%" }} 
-                    transition={{ duration: 0.8, delay: 0.4, ease: [0.76, 0, 0.24, 1] }} 
-                    className="block"
-                  >
-                    more than a
-                  </motion.span>
-                </span>
-              </h1>
-              
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
-                animate={{ opacity: isLoading ? 0 : 1, scale: isLoading ? 0.8 : 1, rotate: isLoading ? -10 : -3 }}
-                transition={{ duration: 1, delay: 0.7, ease: "easeOut" }}
-                className="absolute -bottom-4 md:-bottom-12 -left-4 md:-left-8 font-cursive text-[6rem] md:text-[10rem] text-[#4c618b] whitespace-nowrap z-0 select-none origin-left"
-              >
-                transcript.
-              </motion.div>
-            </div>
-            
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: isLoading ? 0 : 1, y: isLoading ? 20 : 0 }}
-              transition={{ duration: 0.8, delay: 1 }}
-              className="mt-16 md:mt-24 text-lg md:text-xl font-inter text-[#113221] max-w-md leading-relaxed z-10"
-            >
-              Our approach is student-first and privacy-led — proving what matters without exposing everything else.
-            </motion.p>
-            
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: isLoading ? 0 : 1, y: isLoading ? 20 : 0 }}
-              transition={{ duration: 0.8, delay: 1.1 }}
-              className="mt-12 z-10"
-            >
-              <Link href="/about" className="inline-flex items-center space-x-4 text-[#4c618b] font-montserrat font-medium hover:opacity-70 transition-opacity group">
-                <span>See How It Works</span>
-                <svg width="32" height="12" viewBox="0 0 32 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-transform duration-300 group-hover:translate-x-2">
-                  <path d="M26 1L31 6M31 6L26 11M31 6H0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-            </motion.div>
-          </motion.div>
-        </section>
-
-        {/* WHAT WE DO SECTION - Horizontal Scroll & Mask Reveals */}
-        <section ref={horizontalRef} className="h-[200vh] relative bg-[#F8F7F3]">
-          <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
-            <div className="px-6 md:px-12 mb-12">
-              <motion.h2 
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className="text-sm font-montserrat font-bold tracking-widest uppercase text-[#113221]"
-              >
-                What We Do
-              </motion.h2>
-            </div>
-            
-            <motion.div style={{ x: horizontalX }} className="flex gap-8 md:gap-24 px-6 md:px-12 w-max items-center">
-              {/* Project 1 */}
-              <div className="group cursor-pointer flex flex-col w-[85vw] md:w-[50vw]">
-                <div 
-                  className="relative h-[50vh] md:h-[65vh] w-full overflow-hidden"
-                  data-cursor="VIEW"
-                >
-                  <motion.div 
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.7, ease: "easeOut" }}
-                    className="w-full h-full relative"
-                  >
-                    <Image 
-                      src="https://picsum.photos/seed/arro/1000/1000"
-                      alt="Academic Passport"
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="object-cover"
-                      referrerPolicy="no-referrer"
-                    />
-                  </motion.div>
-                </div>
-                <div className="mt-6 flex justify-between items-center">
-                  <h3 className="text-2xl font-montserrat font-semibold text-[#113221]">Academic Passport</h3>
-                  <svg width="40" height="12" viewBox="0 0 40 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#113221] transition-transform duration-300 group-hover:translate-x-2">
-                    <path d="M34 1L39 6M39 6L34 11M39 6H0" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Project 2 */}
-              <div className="group cursor-pointer flex flex-col w-[85vw] md:w-[50vw]">
-                <div 
-                  className="relative h-[50vh] md:h-[65vh] w-full overflow-hidden"
-                  data-cursor="VIEW"
-                >
-                  <motion.div 
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.7, ease: "easeOut" }}
-                    className="w-full h-full relative"
-                  >
-                    <Image 
-                      src="https://picsum.photos/seed/coba/1000/1000"
-                      alt="Zero-Knowledge Proof"
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="object-cover"
-                      referrerPolicy="no-referrer"
-                    />
-                  </motion.div>
-                </div>
-                <div className="mt-6 flex justify-between items-center">
-                  <h3 className="text-2xl font-montserrat font-semibold text-[#113221]">Zero-Knowledge Proof</h3>
-                  <svg width="40" height="12" viewBox="0 0 40 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#113221] transition-transform duration-300 group-hover:translate-x-2">
-                    <path d="M34 1L39 6M39 6L34 11M39 6H0" />
-                  </svg>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* WHY WE DO IT SECTION - 3D Scroll Triggered Reveal */}
-        <section className="bg-[#E4DCCB] px-6 md:px-12 py-32 mt-12 overflow-hidden" style={{ perspective: 1000 }}>
-          <motion.div 
-            initial={{ opacity: 0, rotateX: 15, y: 100 }}
-            whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="max-w-4xl"
-            style={{ transformStyle: "preserve-3d" }}
-          >
-            <h2 className="text-sm font-montserrat font-bold tracking-widest uppercase text-[#113221] mb-8">Why We Do It</h2>
-            
-            <div className="relative inline-block mb-8">
-              <h3 className="text-[2.5rem] md:text-[3.5rem] font-montserrat font-bold leading-[1.2] text-[#113221] relative z-10">
-                Our why and how <br />
-                give way to
-              </h3>
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.8, rotate: -15 }}
-                whileInView={{ opacity: 1, scale: 1, rotate: -3 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.3, ease: "backOut" }}
-                className="absolute -bottom-8 -right-8 md:-right-24 font-cursive text-[5rem] md:text-[8rem] text-[#E85D34] whitespace-nowrap z-0 select-none origin-bottom-left"
-              >
-                the proof.
-              </motion.div>
-            </div>
-            
-            <p className="mt-12 md:mt-16 text-lg font-inter text-[#113221] max-w-xl leading-relaxed">
-              A degree shouldn&apos;t require handing over your entire academic history just to prove one fact. We built EduPass so students stay in control — sharing exactly what a university, employer, or embassy needs, and nothing more.
-            </p>
-            
-            <div className="mt-12">
-              <Link href="/about" className="inline-flex items-center space-x-4 text-[#E85D34] font-montserrat font-medium hover:opacity-70 transition-opacity group">
-                <span>Get To Know Us</span>
-                <svg width="32" height="12" viewBox="0 0 32 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-transform duration-300 group-hover:translate-x-2">
-                  <path d="M26 1L31 6M31 6L26 11M31 6H0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-            </div>
-          </motion.div>
-        </section>
-
-        {/* CLIENTS CAROUSEL SECTION - Interactive Hover Marquee */}
-        <section className="px-6 md:px-12 py-32 overflow-hidden bg-[#F8F7F3]" data-cursor="DRAG">
-          {/* Using hover:[animation-play-state:paused] creates an interactive hover carousel effect */}
-          <div className="flex items-center space-x-16 md:space-x-32 w-max animate-marquee hover:[animation-play-state:paused] cursor-pointer">
-            <div className="flex flex-col items-center justify-center transition-transform hover:scale-105">
-              <span className="text-3xl font-montserrat font-medium tracking-widest text-[#113221]">W3C</span>
-              <span className="text-[10px] font-montserrat tracking-[0.2em] uppercase text-[#113221] mt-1">Verifiable Credentials</span>
-            </div>
-            <div className="flex flex-col items-center justify-center transition-transform hover:scale-105">
-              <span className="text-3xl font-montserrat font-bold tracking-widest text-[#113221]">DID</span>
-              <span className="text-xs font-montserrat tracking-[0.2em] uppercase text-[#113221] mt-1">Decentralized Identity</span>
-            </div>
-            <div className="flex flex-col items-center justify-center transition-transform hover:scale-105">
-              <span className="text-4xl font-playfair font-bold tracking-widest text-[#113221]">ZK-SNARK</span>
-              <span className="text-xs font-montserrat tracking-[0.2em] uppercase text-[#113221] mt-1">Proof Engine</span>
-            </div>
-            <div className="flex flex-col items-center justify-center transition-transform hover:scale-105">
-              <span className="text-3xl font-playfair tracking-widest text-[#113221]">DIGILOCKER</span>
-              <span className="text-[10px] font-montserrat tracking-widest text-[#113221] mt-1">Interoperable</span>
-            </div>
-            <div className="flex flex-col items-center justify-center transition-transform hover:scale-105">
-              <span className="text-3xl font-montserrat tracking-widest text-[#113221]">UGC/AICTE</span>
-              <span className="text-[10px] font-montserrat tracking-widest text-[#113221] mt-1">Accreditation-Ready</span>
-            </div>
-            
-            {/* Duplicate for infinite effect */}
-            <div className="flex flex-col items-center justify-center transition-transform hover:scale-105">
-              <span className="text-3xl font-montserrat font-medium tracking-widest text-[#113221]">W3C</span>
-              <span className="text-[10px] font-montserrat tracking-[0.2em] uppercase text-[#113221] mt-1">Verifiable Credentials</span>
-            </div>
-            <div className="flex flex-col items-center justify-center transition-transform hover:scale-105">
-              <span className="text-3xl font-montserrat font-bold tracking-widest text-[#113221]">DID</span>
-              <span className="text-xs font-montserrat tracking-[0.2em] uppercase text-[#113221] mt-1">Decentralized Identity</span>
-            </div>
-            <div className="flex flex-col items-center justify-center transition-transform hover:scale-105">
-              <span className="text-4xl font-playfair font-bold tracking-widest text-[#113221]">ZK-SNARK</span>
-              <span className="text-xs font-montserrat tracking-[0.2em] uppercase text-[#113221] mt-1">Proof Engine</span>
-            </div>
-            <div className="flex flex-col items-center justify-center transition-transform hover:scale-105">
-              <span className="text-3xl font-playfair tracking-widest text-[#113221]">DIGILOCKER</span>
-              <span className="text-[10px] font-montserrat tracking-widest text-[#113221] mt-1">Interoperable</span>
-            </div>
-            <div className="flex flex-col items-center justify-center transition-transform hover:scale-105">
-              <span className="text-3xl font-montserrat tracking-widest text-[#113221]">UGC/AICTE</span>
-              <span className="text-[10px] font-montserrat tracking-widest text-[#113221] mt-1">Accreditation-Ready</span>
-            </div>
-          </div>
-        </section>
-
-      </main>
-      
-      {/* FOOTER */}
-      <footer className="bg-[#133221] text-white pt-24 pb-12 px-6 md:px-12 relative z-20">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 border-b border-[#2A4B3A] pb-16">
-          
-          <div className="md:col-span-5">
-            <Link href="/" className="text-[4rem] md:text-[6rem] leading-none font-playfair font-bold text-[#698B75] hover:text-white transition-colors">
-              EduPass.
-            </Link>
-          </div>
-          
-          <div className="md:col-span-2 flex flex-col space-y-4 pt-2">
-            <Link href="/about" className="font-montserrat font-semibold tracking-widest uppercase text-sm hover:text-[#E85D34] transition-colors">About</Link>
-            <Link href="/features" className="font-montserrat font-semibold tracking-widest uppercase text-sm hover:text-[#E85D34] transition-colors">Features</Link>
-            <Link href="/demo" className="font-montserrat font-semibold tracking-widest uppercase text-sm hover:text-[#E85D34] transition-colors">Demo</Link>
-            <Link href="/roadmap" className="font-montserrat font-semibold tracking-widest uppercase text-sm hover:text-[#E85D34] transition-colors">Roadmap</Link>
-            <Link href="/contact" className="font-montserrat font-semibold tracking-widest uppercase text-sm hover:text-[#E85D34] transition-colors">Contact</Link>
-          </div>
-          
-          <div className="md:col-span-3 flex flex-col space-y-2 pt-2">
-            <h4 className="font-montserrat font-bold tracking-widest uppercase text-sm mb-2">Studio</h4>
-            <p className="font-inter text-gray-300">Prove, don&apos;t reveal.</p>
-          </div>
-          
-          <div className="md:col-span-2 flex space-x-6 justify-start md:justify-end pt-2">
-            <a href="#" className="text-[#698B75] hover:text-white transition-colors" aria-label="GitHub">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-              </svg>
-            </a>
-            <a href="#" className="text-[#698B75] hover:text-white transition-colors" aria-label="LinkedIn">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                <rect x="2" y="9" width="4" height="12"></rect>
-                <circle cx="4" cy="4" r="2"></circle>
-              </svg>
-            </a>
-          </div>
-        </div>
-        
-        <div className="pt-8">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#698B75]">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-        </div>
-      </footer>
-    </>
-  );
-}
-
-export default function Home() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return (
-      <div className="min-h-screen bg-[#F8F7F3] flex items-center justify-center">
-        <div className="text-3xl font-playfair font-bold text-[#113221] animate-pulse">EduPass.</div>
-      </div>
-    );
-  }
+  if (!mounted) return null;
 
+  return (
+    <div className="min-h-screen bg-[#EAE9E4] text-[#131313] font-mono selection:bg-[#FF5C00] selection:text-black">
+      <Header />
+
+      <main className="w-full">
+        {/* HERO SECTION - Swiss Editorial Grid */}
+        <section className="w-full max-w-[1280px] mx-auto border-b border-[#333333] px-6 md:px-10 py-16 md:py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            
+            {/* Left Column: About Paragraph */}
+            <div className="lg:col-span-3 flex flex-col gap-4">
+              <span className="font-mono text-xs font-semibold tracking-[0.15em] uppercase text-[#131313]">
+                [ ABOUT ]
+              </span>
+              <p className="font-mono text-xs md:text-sm leading-relaxed uppercase text-[#131313]">
+                Official academic reporting layer proving that transcripts are historic, still relevant until... we disrupt proof and access. Do not penalize partners now.
+              </p>
+            </div>
+
+            {/* Center Column: PRIVACY PASSPORT Display */}
+            <div className="lg:col-span-6 flex flex-col justify-center items-center text-center">
+              <h1 className="font-anton text-[4rem] sm:text-[6.5rem] md:text-[8rem] leading-[0.88] tracking-tight uppercase text-[#131313] select-none">
+                PRIVACY<br />PASSPORT
+              </h1>
+            </div>
+
+            {/* Right Column: Metadata & List Item */}
+            <div className="lg:col-span-3 flex flex-col justify-between h-full gap-8">
+              <div className="flex flex-col items-end text-right">
+                <span className="font-mono text-xs font-semibold tracking-[0.15em] uppercase text-[#131313]">
+                  ACCEPTED WORLDWIDE
+                </span>
+                <span className="font-mono text-xs text-[#333333] uppercase mt-1">
+                  VERIFIED • ON-CHAIN • PRIVACY-FIRST
+                </span>
+              </div>
+
+              <div className="border-l border-[#333333] pl-4 py-2 flex flex-col gap-2">
+                <div className="border-b border-[#333333] pb-2 font-mono text-xs font-medium tracking-wider uppercase text-[#131313]">
+                  [01] VERIFIABLE CREDENTIALS
+                </div>
+                <div className="font-mono text-xs text-[#333333] uppercase">
+                  PROGRAMMABLE ELIGIBILITY PROOFS
+                </div>
+              </div>
+
+              <div className="self-end">
+                <span className="inline-block font-mono text-[11px] font-semibold uppercase tracking-widest border border-[#131313] px-3 py-1.5 bg-[#E2E2E2]">
+                  DON&apos;T SEND YOUR TRANSCRIPT. PROVE IT.
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* MARQUEE BANNER SECTION - Industrial Orange */}
+        <section className="w-full bg-[#FF5C00] border-b border-[#333333] overflow-hidden py-8">
+          <div className="animate-marquee font-archivo font-extrabold text-2xl md:text-4xl tracking-tight uppercase text-[#131313] flex gap-8">
+            <span>GETTING A TRANSCRIPT TAKES WEEKS. VERIFYING ONE TAKES ANOTHER. EDUPASS TAKES SECONDS. •</span>
+            <span>GETTING A TRANSCRIPT TAKES WEEKS. VERIFYING ONE TAKES ANOTHER. EDUPASS TAKES SECONDS. •</span>
+            <span>GETTING A TRANSCRIPT TAKES WEEKS. VERIFYING ONE TAKES ANOTHER. EDUPASS TAKES SECONDS. •</span>
+            <span>GETTING A TRANSCRIPT TAKES WEEKS. VERIFYING ONE TAKES ANOTHER. EDUPASS TAKES SECONDS. •</span>
+          </div>
+        </section>
+
+        {/* TWO COLUMN STATEMENT SECTION */}
+        <section className="w-full max-w-[1280px] mx-auto border-b border-[#333333]">
+          <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#333333]">
+            <div className="p-10 md:p-16 flex items-center">
+              <h2 className="font-archivo font-bold text-3xl md:text-5xl leading-[1.1] uppercase text-[#131313]">
+                PROVE WHAT MATTERS WITHOUT REVEALING EVERYTHING ELSE
+              </h2>
+            </div>
+            <div className="p-10 md:p-16 flex items-center">
+              <h2 className="font-archivo font-bold text-3xl md:text-5xl leading-[1.1] uppercase text-[#131313]">
+                RECORDS OWNED BY THE STUDENT, NOT THE GATEKEEPER
+              </h2>
+            </div>
+          </div>
+        </section>
+
+        {/* NUMBERED FEATURE BREAKDOWN SECTION ([01] to [05]) */}
+        <section className="w-full max-w-[1280px] mx-auto border-b border-[#333333] px-6 md:px-10 py-16 md:py-24">
+          <div className="flex flex-col">
+            
+            {/* Row 1 */}
+            <div className="grid grid-cols-1 md:grid-cols-12 border-b border-[#333333] py-6 md:py-8 items-start gap-4">
+              <div className="md:col-span-2 font-mono text-xs font-semibold tracking-wider text-[#131313]">
+                [01]
+              </div>
+              <div className="md:col-span-10 flex flex-col md:flex-row md:items-center justify-between gap-2">
+                <h3 className="font-archivo font-semibold text-xl md:text-2xl uppercase text-[#131313]">
+                  VERIFIABLE CREDENTIALS
+                </h3>
+                <p className="font-mono text-xs md:text-sm text-[#333333] max-w-xl">
+                  Building clear cryptographic commitments, strong payload privacy, and digital identities that feel distinctive and intentional.
+                </p>
+              </div>
+            </div>
+
+            {/* Row 2 */}
+            <div className="grid grid-cols-1 md:grid-cols-12 border-b border-[#333333] py-6 md:py-8 items-start gap-4">
+              <div className="md:col-span-2 font-mono text-xs font-semibold tracking-wider text-[#131313]">
+                [02]
+              </div>
+              <div className="md:col-span-10 flex flex-col md:flex-row md:items-center justify-between gap-2">
+                <h3 className="font-archivo font-semibold text-xl md:text-2xl uppercase text-[#131313]">
+                  ZERO-KNOWLEDGE PROOFS
+                </h3>
+                <p className="font-mono text-xs md:text-sm text-[#333333] max-w-xl">
+                  Developing privacy-first eligibility proofs with zero-knowledge circuits, smooth performance, and precise execution.
+                </p>
+              </div>
+            </div>
+
+            {/* Row 3 */}
+            <div className="grid grid-cols-1 md:grid-cols-12 border-b border-[#333333] py-6 md:py-8 items-start gap-4">
+              <div className="md:col-span-2 font-mono text-xs font-semibold tracking-wider text-[#131313]">
+                [03]
+              </div>
+              <div className="md:col-span-10 flex flex-col md:flex-row md:items-center justify-between gap-2">
+                <h3 className="font-archivo font-semibold text-xl md:text-2xl uppercase text-[#131313]">
+                  AI MOBILITY AGENT
+                </h3>
+                <p className="font-mono text-xs md:text-sm text-[#333333] max-w-xl">
+                  Using intelligent parsing to evaluate admission criteria, structure academic equivalencies, and streamline international mobility.
+                </p>
+              </div>
+            </div>
+
+            {/* Row 4 */}
+            <div className="grid grid-cols-1 md:grid-cols-12 border-b border-[#333333] py-6 md:py-8 items-start gap-4">
+              <div className="md:col-span-2 font-mono text-xs font-semibold tracking-wider text-[#131313]">
+                [04]
+              </div>
+              <div className="md:col-span-10 flex flex-col md:flex-row md:items-center justify-between gap-2">
+                <h3 className="font-archivo font-semibold text-xl md:text-2xl uppercase text-[#131313]">
+                  INSTANT VERIFICATION
+                </h3>
+                <p className="font-mono text-xs md:text-sm text-[#333333] max-w-xl">
+                  Translating university records into instant verifier outputs that execute on EVM devnets and public testnets without latency.
+                </p>
+              </div>
+            </div>
+
+            {/* Row 5 */}
+            <div className="grid grid-cols-1 md:grid-cols-12 py-6 md:py-8 items-start gap-4">
+              <div className="md:col-span-2 font-mono text-xs font-semibold tracking-wider text-[#131313]">
+                [05]
+              </div>
+              <div className="md:col-span-10 flex flex-col md:flex-row md:items-center justify-between gap-2">
+                <h3 className="font-archivo font-semibold text-xl md:text-2xl uppercase text-[#131313]">
+                  CREDENTIAL FIREWALL
+                </h3>
+                <p className="font-mono text-xs md:text-sm text-[#333333] max-w-xl">
+                  Shaping student-owned records into secure off-chain storage containers that stay flexible, purposeful, and immune to tampering.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* PASSPORT & GRADE BREAKDOWN SECTION */}
+        <section className="w-full max-w-[1280px] mx-auto border-b border-[#333333]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-[#333333]">
+            
+            {/* Left Column: PASSPORT Title & Stamp */}
+            <div className="lg:col-span-5 p-10 md:p-16 flex flex-col justify-between gap-12">
+              <h2 className="font-anton text-6xl md:text-8xl uppercase text-[#131313]">
+                PASSPORT
+              </h2>
+
+              <div className="bg-[#FF5C00] border border-[#131313] p-6 w-full max-w-xs flex flex-col gap-4">
+                <div className="font-mono text-xs font-bold uppercase tracking-wider text-[#131313]">
+                  T. CASSEROTTI
+                </div>
+                <div className="font-mono text-[10px] uppercase text-[#131313]/80 leading-tight">
+                  VERIFIED ACADEMIC IDENTITY<br />
+                  ISSUER: STANFORD UNIVERSITY<br />
+                  COMMITMENT: 0x8F92...B3A1
+                </div>
+                <div className="h-2 w-full bg-[#131313]" />
+              </div>
+            </div>
+
+            {/* Right Column: Grade Breakdown List */}
+            <div className="lg:col-span-7 p-10 md:p-16 flex flex-col gap-8 justify-center">
+              <p className="font-mono text-sm md:text-base leading-relaxed text-[#131313]">
+                A single verifiable credential layer that travels with the student — across universities, employers, and borders.
+              </p>
+
+              <div className="flex flex-col border-t border-[#333333]">
+                <div className="flex justify-between items-center py-3 border-b border-[#333333] font-mono text-xs md:text-sm">
+                  <span className="font-archivo font-bold text-base uppercase text-[#131313]">KORMAN</span>
+                  <span className="font-bold text-[#131313]">95</span>
+                </div>
+                <div className="flex justify-between items-center py-3 border-b border-[#333333] font-mono text-xs md:text-sm">
+                  <span className="font-archivo font-bold text-base uppercase text-[#131313]">DRUMWRIGHT</span>
+                  <span className="font-bold text-[#131313]">92</span>
+                </div>
+                <div className="flex justify-between items-center py-3 border-b border-[#333333] font-mono text-xs md:text-sm">
+                  <span className="font-archivo font-bold text-base uppercase text-[#131313]">MILTURGE</span>
+                  <span className="font-bold text-[#131313]">92</span>
+                </div>
+                <div className="flex justify-between items-center py-3 border-b border-[#333333] font-mono text-xs md:text-sm">
+                  <span className="font-archivo font-bold text-base uppercase text-[#131313]">TSENG</span>
+                  <span className="font-bold text-[#131313]">85</span>
+                </div>
+                <div className="flex justify-between items-center py-3 border-b border-[#333333] font-mono text-xs md:text-sm">
+                  <span className="font-archivo font-bold text-base uppercase text-[#131313]">PRICE</span>
+                  <span className="font-bold text-[#131313]">85+</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* INTERACTIVE WEB3 CARDS SECTION ("DON'T SEND YOUR TRANSCRIPT. PROVE IT.") */}
+        <section className="w-full max-w-[1280px] mx-auto border-b border-[#333333] px-6 md:px-10 py-16 md:py-24">
+          <div className="flex flex-col gap-12">
+            
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-2 border-[#131313] pb-6">
+              <h2 className="font-anton text-5xl md:text-7xl uppercase text-[#131313] max-w-3xl leading-[0.95]">
+                DON&apos;T SEND YOUR TRANSCRIPT. PROVE IT.
+              </h2>
+              <span className="font-mono text-xs font-semibold uppercase tracking-widest text-[#131313]">
+                [ 03 PORTALS ACTIVE ]
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              
+              {/* Card 1: DASH / ISSUE */}
+              <div className="bg-[#E2E2E2] border border-[#131313] p-8 flex flex-col justify-between gap-6 hover:border-[#FF5C00] transition-colors group">
+                <div className="flex justify-between items-start">
+                  <span className="font-mono text-xs font-bold text-[#131313]">[ 01 ]</span>
+                  <Link 
+                    href="/issue" 
+                    className="font-mono text-xs font-semibold uppercase border border-[#131313] px-3 py-1 bg-white hover:bg-[#131313] hover:text-white transition-colors"
+                  >
+                    ISSUE PROJECT ↗
+                  </Link>
+                </div>
+                <div>
+                  <h3 className="font-archivo font-bold text-3xl uppercase text-[#131313] group-hover:text-[#FF5C00] transition-colors">
+                    DASH
+                  </h3>
+                  <span className="font-archivo font-semibold text-xs text-[#6B7280] uppercase tracking-wider block mt-1">
+                    INSTITUTION ISSUANCE PORTAL
+                  </span>
+                  <p className="font-mono text-xs text-[#131313] leading-relaxed mt-4">
+                    A custom Web3 workflow shaped for modern universities and accredited institutions. Issue cryptographically signed commitments on-chain in seconds.
+                  </p>
+                </div>
+              </div>
+
+              {/* Card 2: RACEPOINT / VERIFY */}
+              <div className="bg-[#E2E2E2] border border-[#131313] p-8 flex flex-col justify-between gap-6 hover:border-[#FF5C00] transition-colors group">
+                <div className="flex justify-between items-start">
+                  <span className="font-mono text-xs font-bold text-[#131313]">[ 02 ]</span>
+                  <Link 
+                    href="/verify" 
+                    className="font-mono text-xs font-semibold uppercase border border-[#131313] px-3 py-1 bg-white hover:bg-[#131313] hover:text-white transition-colors"
+                  >
+                    VERIFY PORTAL ↗
+                  </Link>
+                </div>
+                <div>
+                  <h3 className="font-archivo font-bold text-3xl uppercase text-[#131313] group-hover:text-[#FF5C00] transition-colors">
+                    RACEPOINT
+                  </h3>
+                  <span className="font-archivo font-semibold text-xs text-[#6B7280] uppercase tracking-wider block mt-1">
+                    PUBLIC VERIFICATION SYSTEM
+                  </span>
+                  <p className="font-mono text-xs text-[#131313] leading-relaxed mt-4">
+                    Instant verifier portal with off-chain JSON hash integrity verification against on-chain smart contract state. Zero phone calls, zero waiting.
+                  </p>
+                </div>
+              </div>
+
+              {/* Card 3: PASSPORT / DASHBOARD */}
+              <div className="bg-[#E2E2E2] border border-[#131313] p-8 flex flex-col justify-between gap-6 hover:border-[#FF5C00] transition-colors group">
+                <div className="flex justify-between items-start">
+                  <span className="font-mono text-xs font-bold text-[#131313]">[ 03 ]</span>
+                  <Link 
+                    href="/passport" 
+                    className="font-mono text-xs font-semibold uppercase border border-[#131313] px-3 py-1 bg-white hover:bg-[#131313] hover:text-white transition-colors"
+                  >
+                    MY PASSPORT ↗
+                  </Link>
+                </div>
+                <div>
+                  <h3 className="font-archivo font-bold text-3xl uppercase text-[#131313] group-hover:text-[#FF5C00] transition-colors">
+                    PASSPORT
+                  </h3>
+                  <span className="font-archivo font-semibold text-xs text-[#6B7280] uppercase tracking-wider block mt-1">
+                    STUDENT CREDENTIAL HUB
+                  </span>
+                  <p className="font-mono text-xs text-[#131313] leading-relaxed mt-4">
+                    Student dashboard containing verified academic records, cryptographic commitments, and zero-knowledge eligibility proof generators.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+        {/* GIANT ORANGE FOOTER & CTA SECTION (#FF5C00) */}
+        <footer className="w-full bg-[#FF5C00] border-t border-[#333333] text-[#131313] pt-16 md:pt-24 pb-8">
+          <div className="max-w-[1280px] mx-auto px-6 md:px-10 flex flex-col gap-16">
+            
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+              
+              {/* Left Column: CTA Title & Subtext */}
+              <div className="lg:col-span-7 flex flex-col gap-6">
+                <h2 className="font-anton text-5xl sm:text-6xl md:text-7xl leading-[0.95] uppercase text-[#131313]">
+                  LET&apos;S MAKE YOUR NEXT CREDENTIAL VERIFIABLE.
+                </h2>
+                <p className="font-mono text-xs md:text-sm uppercase leading-relaxed text-[#131313] max-w-xl">
+                  IT&apos;S TIME TRANSCRIPTS WERE STUDENT-OWNED, NOT PROXIED BY LATENCY AND MANUAL GATEKEEPERS. LET&apos;S BUILD THE WEB3 LAYER TOGETHER.
+                </p>
+              </div>
+
+              {/* Right Column: Links */}
+              <div className="lg:col-span-5 grid grid-cols-2 gap-8 font-mono text-xs uppercase tracking-wider text-[#131313]">
+                <div className="flex flex-col gap-3">
+                  <span className="font-bold border-b border-[#131313] pb-2">PORTALS</span>
+                  <Link href="/issue" className="hover:underline">ISSUE CREDENTIAL</Link>
+                  <Link href="/verify" className="hover:underline">VERIFY PORTAL</Link>
+                  <Link href="/passport" className="hover:underline">STUDENT PASSPORT</Link>
+                </div>
+                <div className="flex flex-col gap-3">
+                  <span className="font-bold border-b border-[#131313] pb-2">CONNECT</span>
+                  <a href="https://github.com/YeswanthRam28/EdupassKaipulla" target="_blank" rel="noreferrer" className="hover:underline">GITHUB ↗</a>
+                  <a href="#" className="hover:underline">TWITTER / X ↗</a>
+                  <a href="#" className="hover:underline">DOCUMENTATION ↗</a>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Giant EDUPASS Footer Typography */}
+            <div className="pt-8 border-t border-[#131313] text-center">
+              <h1 className="font-anton text-[16vw] leading-none tracking-tight uppercase text-[#131313] select-none">
+                EDUPASS
+              </h1>
+            </div>
+
+          </div>
+        </footer>
+
+      </main>
+    </div>
+  );
+}
+
+export default function Home() {
   return <HomeInner />;
 }

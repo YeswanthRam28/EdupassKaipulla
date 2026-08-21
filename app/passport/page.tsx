@@ -35,30 +35,29 @@ function PassportPageInner() {
   ];
 
   return (
-    <>
+    <div className="min-h-screen bg-[#EAE9E4] text-[#131313] font-mono selection:bg-[#FF5C00] selection:text-black">
       <Header />
-      <main className="min-h-screen bg-[#F8F7F3] pt-32 pb-24 px-6 md:px-12">
-        <div className="max-w-5xl mx-auto space-y-8">
+      <main className="max-w-[1280px] mx-auto px-6 md:px-10 py-16">
+        <div className="max-w-4xl mx-auto space-y-8">
           
-          <div className="bg-[#113221] text-white rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
-            <div className="absolute right-0 top-0 w-96 h-96 bg-[#E85D34]/10 rounded-full blur-3xl pointer-events-none" />
-
+          {/* Header Banner */}
+          <div className="bg-[#131313] text-white border-2 border-[#131313] p-8 md:p-12 relative overflow-hidden font-mono">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
               <div className="flex items-center space-x-5">
-                <div className="w-16 h-16 rounded-2xl bg-[#E85D34] flex items-center justify-center text-white shadow-lg shrink-0">
+                <div className="w-16 h-16 bg-[#FF5C00] border border-[#131313] flex items-center justify-center text-[#131313] shrink-0 font-bold">
                   <User className="w-8 h-8" />
                 </div>
                 <div>
                   <div className="flex items-center space-x-3">
-                    <h1 className="text-2xl md:text-3xl font-montserrat font-bold">
+                    <h1 className="text-2xl md:text-4xl font-archivo font-bold uppercase tracking-tight">
                       Academic Passport
                     </h1>
-                    <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-montserrat font-bold px-3 py-1 rounded-full uppercase">
+                    <span className="bg-[#FF5C00] text-[#131313] text-[10px] font-mono font-bold px-3 py-1 uppercase">
                       Student Owned
                     </span>
                   </div>
-                  <p className="text-xs font-mono text-gray-300 mt-1">
-                    Wallet Anchor: {isConnected && address ? address : 'Not Connected (Connect wallet in header)'}
+                  <p className="text-xs font-mono text-gray-300 mt-1 uppercase">
+                    WALLET ANCHOR: {isConnected && address ? address : 'NOT CONNECTED (CONNECT WALLET IN HEADER)'}
                   </p>
                 </div>
               </div>
@@ -66,30 +65,32 @@ function PassportPageInner() {
               <div className="flex items-center space-x-3">
                 <Link
                   href="/verify"
-                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-montserrat text-xs font-semibold px-5 py-3 rounded-full transition-colors flex items-center space-x-2"
+                  className="bg-[#FF5C00] text-[#131313] hover:bg-white font-mono text-xs font-bold uppercase px-5 py-3 border border-[#131313] transition-colors flex items-center space-x-2"
                 >
-                  <QrCode className="w-4 h-4 text-[#E85D34]" />
-                  <span>Verify Portal</span>
+                  <QrCode className="w-4 h-4" />
+                  <span>VERIFY PORTAL ↗</span>
                 </Link>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 border border-[#113221]/10 flex items-center space-x-4 shadow-sm">
-            <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-700 shrink-0">
+          {/* Privacy Note */}
+          <div className="bg-[#E2E2E2] border border-[#131313] p-6 flex items-center space-x-4 font-mono text-xs">
+            <div className="w-10 h-10 bg-[#FF5C00] border border-[#131313] flex items-center justify-center text-[#131313] shrink-0 font-bold">
               <Lock className="w-5 h-5" />
             </div>
-            <div className="text-xs font-inter text-[#113221]/80">
-              <strong className="font-montserrat font-bold text-[#113221] block text-sm mb-0.5">
-                "Prove, Don't Reveal" Privacy Principle
+            <div className="uppercase leading-relaxed">
+              <strong className="font-archivo font-bold text-sm block mb-0.5 text-[#131313]">
+                "PROVE, DON&apos;T REVEAL" PRIVACY PRINCIPLE
               </strong>
               Your full transcript and raw grades remain stored safely in your private wallet. Third-party verifiers receive only on-chain cryptographic commitment proofs.
             </div>
           </div>
 
+          {/* Credentials List */}
           <div className="space-y-6">
-            <h2 className="text-xl font-montserrat font-bold text-[#113221] flex items-center space-x-2">
-              <Award className="w-5 h-5 text-[#E85D34]" />
+            <h2 className="text-xl font-archivo font-bold uppercase text-[#131313] flex items-center space-x-2 border-b border-[#131313] pb-4">
+              <Award className="w-5 h-5 text-[#FF5C00]" />
               <span>Verifiable Academic Credentials ({sampleCredentials.length})</span>
             </h2>
 
@@ -97,62 +98,62 @@ function PassportPageInner() {
               {sampleCredentials.map((cred) => (
                 <div
                   key={cred.id}
-                  className="bg-white rounded-3xl p-6 md:p-8 shadow-lg border border-[#113221]/10 hover:border-[#E85D34]/30 transition-all duration-300 space-y-6"
+                  className="bg-[#E2E2E2] border-2 border-[#131313] p-6 md:p-8 space-y-6 font-mono"
                 >
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 pb-4">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-[#131313] pb-4">
                     <div>
-                      <span className="font-mono text-xs text-[#E85D34] font-bold">
+                      <span className="font-mono text-xs text-[#FF5C00] font-bold">
                         {cred.id}
                       </span>
-                      <h3 className="text-xl font-montserrat font-bold text-[#113221] mt-0.5">
+                      <h3 className="text-xl md:text-2xl font-archivo font-bold uppercase text-[#131313] mt-0.5">
                         {cred.degree}
                       </h3>
-                      <p className="text-xs font-inter text-gray-600 mt-1">
-                        Issued by: <strong>{cred.institution}</strong> • {cred.issuedAt}
+                      <p className="text-xs uppercase text-[#333333] mt-1">
+                        ISSUED BY: <strong>{cred.institution}</strong> • {cred.issuedAt}
                       </p>
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <span className="bg-emerald-100 text-emerald-800 text-xs font-montserrat font-bold px-3 py-1.5 rounded-full flex items-center space-x-1">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      <span className="bg-[#131313] text-white text-xs font-mono font-bold px-3 py-1.5 border border-[#131313] uppercase flex items-center space-x-1">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#FF5C00]" />
                         <span>ON-CHAIN ACTIVE</span>
                       </span>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-[#113221]/5 rounded-2xl p-4 border border-[#113221]/10 space-y-2">
-                      <span className="text-[10px] font-montserrat font-bold uppercase text-gray-500 block">
-                        Zero-Knowledge Proof Preview
+                    <div className="bg-[#EAE9E4] p-4 border border-[#131313] space-y-2">
+                      <span className="text-[10px] font-mono font-bold uppercase text-[#6B7280] block">
+                        ZERO-KNOWLEDGE PROOF PREVIEW
                       </span>
-                      <div className="text-sm font-montserrat font-bold text-[#113221] flex items-center space-x-2">
-                        <Sparkles className="w-4 h-4 text-[#E85D34]" />
+                      <div className="text-xs font-mono font-bold text-[#131313] flex items-center space-x-2 uppercase">
+                        <Sparkles className="w-4 h-4 text-[#FF5C00]" />
                         <span>{cred.cgpaProof}</span>
                       </div>
-                      <p className="text-[11px] font-inter text-gray-500">
+                      <p className="text-[11px] uppercase text-[#6B7280]">
                         Actual Grade ({cred.actualCgpa}) is masked from third parties.
                       </p>
                     </div>
 
-                    <div className="bg-[#113221]/5 rounded-2xl p-4 border border-[#113221]/10 space-y-2 font-mono text-xs">
-                      <span className="text-[10px] font-montserrat font-bold uppercase text-gray-500 block font-sans">
-                        On-Chain Commitment Hash
+                    <div className="bg-[#EAE9E4] p-4 border border-[#131313] space-y-2 font-mono text-xs">
+                      <span className="text-[10px] font-mono font-bold uppercase text-[#6B7280] block">
+                        ON-CHAIN COMMITMENT HASH
                       </span>
-                      <p className="break-all text-[#113221] font-bold text-[11px]">
+                      <p className="break-all text-[#FF5C00] font-bold text-[11px]">
                         {cred.commitment}
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex justify-between items-center text-xs font-montserrat pt-2">
-                    <span className="text-gray-500 font-inter">
-                      Total Credits: <strong>{cred.credits}</strong>
+                  <div className="flex justify-between items-center text-xs font-mono pt-2 border-t border-[#131313]">
+                    <span className="uppercase text-[#333333]">
+                      TOTAL CREDITS: <strong>{cred.credits}</strong>
                     </span>
                     <Link
                       href={`/verify?id=${cred.id}`}
-                      className="text-[#E85D34] hover:underline font-semibold flex items-center space-x-1"
+                      className="bg-[#131313] hover:bg-[#FF5C00] text-white hover:text-black px-4 py-2 text-xs font-bold uppercase border border-[#131313] transition-colors flex items-center space-x-1"
                     >
-                      <span>Verify Status</span>
+                      <span>VERIFY STATUS</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </Link>
                   </div>
@@ -163,7 +164,7 @@ function PassportPageInner() {
 
         </div>
       </main>
-    </>
+    </div>
   );
 }
 
@@ -176,12 +177,12 @@ export default function PassportPage() {
 
   if (!mounted) {
     return (
-      <>
+      <div className="min-h-screen bg-[#EAE9E4]">
         <Header />
-        <main className="min-h-screen bg-[#F8F7F3] pt-32 pb-24 px-6 md:px-12">
-          <div className="max-w-5xl mx-auto bg-white rounded-3xl p-12 shadow-xl border border-[#113221]/10 min-h-[400px] animate-pulse" />
+        <main className="max-w-[1280px] mx-auto px-6 md:px-10 py-16">
+          <div className="max-w-4xl mx-auto bg-[#E2E2E2] border-2 border-[#131313] p-12 min-h-[400px] animate-pulse" />
         </main>
-      </>
+      </div>
     );
   }
 

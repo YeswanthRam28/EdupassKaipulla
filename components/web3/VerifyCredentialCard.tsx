@@ -77,19 +77,19 @@ function VerifyCredentialCardInner() {
   const isCurrentIssuer = address && issuerAddress && address.toLowerCase() === issuerAddress.toLowerCase();
 
   return (
-    <div className="max-w-3xl mx-auto bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-[#113221]/10 space-y-8">
+    <div className="w-full max-w-3xl mx-auto bg-[#E2E2E2] border-2 border-[#131313] p-8 md:p-12 space-y-8 font-mono">
       <div>
-        <div className="flex items-center space-x-3 mb-2">
-          <div className="w-12 h-12 rounded-2xl bg-[#113221] flex items-center justify-center text-white">
-            <Search className="w-6 h-6 text-[#E85D34]" />
+        <div className="flex items-center gap-4 border-b border-[#131313] pb-6">
+          <div className="w-12 h-12 bg-[#FF5C00] border border-[#131313] flex items-center justify-center text-[#131313] font-bold">
+            <Search className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-2xl font-montserrat font-bold text-[#113221]">
-              Public Credential Verification Portal
+            <span className="text-xs font-bold tracking-widest text-[#FF5C00] uppercase block">
+              [ PUBLIC VERIFIER SYSTEM ]
+            </span>
+            <h2 className="text-2xl md:text-3xl font-archivo font-bold uppercase text-[#131313]">
+              Credential Verification Portal
             </h2>
-            <p className="text-xs font-inter text-[#113221]/70">
-              Query on-chain smart contract status and verify tamper-proof payload integrity instantly.
-            </p>
           </div>
         </div>
 
@@ -100,30 +100,30 @@ function VerifyCredentialCardInner() {
             onChange={(e) => setSearchId(e.target.value)}
             placeholder="Enter Credential ID (e.g. EDU-2026-9283 or 0x...)"
             required
-            className="flex-1 px-4 py-3.5 rounded-xl border border-gray-300 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#E85D34]"
+            className="flex-1 bg-[#EAE9E4] px-4 py-3.5 border border-[#131313] font-mono text-xs focus:outline-none focus:border-[#FF5C00] uppercase"
           />
           <button
             type="submit"
-            className="bg-[#113221] hover:bg-[#1a442e] text-white font-montserrat font-semibold px-8 py-3.5 rounded-xl transition-all duration-200 shadow-md"
+            className="bg-[#131313] hover:bg-[#FF5C00] text-white hover:text-black font-mono font-bold text-xs uppercase tracking-widest px-8 py-3.5 border border-[#131313] transition-colors cursor-pointer"
           >
-            Query On-Chain
+            QUERY ON-CHAIN
           </button>
         </form>
       </div>
 
       {queryCredentialIdBytes32 && (
-        <div className="pt-6 border-t border-gray-200">
+        <div className="pt-6 border-t border-[#131313]">
           {isLoading && (
-            <div className="text-center py-8 text-sm font-montserrat text-gray-500 animate-pulse">
-              Fetching credential record from EVM smart contract...
+            <div className="text-center py-8 font-mono text-xs uppercase text-[#131313] animate-pulse">
+              FETCHING CREDENTIAL RECORD FROM EVM SMART CONTRACT...
             </div>
           )}
 
           {!isLoading && !exists && (
-            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 text-center space-y-2">
-              <ShieldAlert className="w-10 h-10 text-gray-400 mx-auto" />
-              <h3 className="font-montserrat font-bold text-gray-800">Credential Not Found</h3>
-              <p className="text-xs font-inter text-gray-500 max-w-md mx-auto">
+            <div className="bg-[#EAE9E4] border border-[#131313] p-8 text-center space-y-3 font-mono">
+              <ShieldAlert className="w-10 h-10 text-[#FF5C00] mx-auto" />
+              <h3 className="font-archivo font-bold text-lg uppercase text-[#131313]">Credential Not Found</h3>
+              <p className="text-xs text-[#333333] max-w-md mx-auto uppercase">
                 No credential matching hash <code>{queryCredentialIdBytes32}</code> has been registered on this blockchain.
               </p>
             </div>
@@ -131,20 +131,20 @@ function VerifyCredentialCardInner() {
 
           {!isLoading && exists && (
             <div className="space-y-6">
-              <div className={`p-6 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
-                isActive ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-red-50 border-red-200 text-red-900'
+              <div className={`p-6 border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-mono ${
+                isActive ? 'bg-[#131313] text-white border-[#131313]' : 'bg-red-100 border-red-500 text-red-900'
               }`}>
                 <div className="flex items-center space-x-3">
                   {isActive ? (
-                    <CheckCircle2 className="w-8 h-8 text-emerald-600 shrink-0" />
+                    <CheckCircle2 className="w-8 h-8 text-[#FF5C00] shrink-0" />
                   ) : (
                     <XCircle className="w-8 h-8 text-red-600 shrink-0" />
                   )}
                   <div>
-                    <h3 className="font-montserrat font-bold text-lg">
+                    <h3 className="font-archivo font-bold text-lg uppercase">
                       {isActive ? 'AUTHENTIC & ACTIVE CREDENTIAL' : 'REVOKED CREDENTIAL'}
                     </h3>
-                    <p className="text-xs opacity-80">
+                    <p className="text-xs uppercase opacity-80">
                       {isActive ? 'This credential commitment is verified active on the EVM registry.' : 'This credential has been revoked by the issuing institution.'}
                     </p>
                   </div>
@@ -154,53 +154,53 @@ function VerifyCredentialCardInner() {
                   <button
                     onClick={handleRevoke}
                     disabled={isRevoking}
-                    className="bg-red-600 hover:bg-red-700 text-white font-montserrat text-xs font-semibold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition-colors disabled:opacity-50"
+                    className="bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold uppercase px-4 py-2 border border-[#131313] transition-colors disabled:opacity-50 cursor-pointer"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span>{isRevoking ? 'Revoking...' : 'Revoke Credential'}</span>
+                    <Trash2 className="w-3.5 h-3.5 inline mr-1" />
+                    <span>{isRevoking ? 'REVOKING...' : 'REVOKE CREDENTIAL'}</span>
                   </button>
                 )}
               </div>
 
-              <div className="bg-[#F8F7F3] rounded-2xl p-6 border border-[#113221]/10 space-y-4 text-xs font-mono">
+              <div className="bg-[#EAE9E4] border border-[#131313] p-6 space-y-4 text-xs font-mono">
                 <div>
-                  <span className="text-gray-500 block uppercase text-[10px] font-montserrat font-bold mb-1">
-                    Credential ID Hash (bytes32)
+                  <span className="text-[#6B7280] block uppercase font-bold text-[10px] mb-1">
+                    CREDENTIAL ID HASH (BYTES32)
                   </span>
-                  <span className="break-all font-bold text-[#113221]">{queryCredentialIdBytes32}</span>
+                  <span className="break-all font-bold text-[#131313]">{queryCredentialIdBytes32}</span>
                 </div>
 
                 <div>
-                  <span className="text-gray-500 block uppercase text-[10px] font-montserrat font-bold mb-1">
-                    Issuer Wallet Address
+                  <span className="text-[#6B7280] block uppercase font-bold text-[10px] mb-1">
+                    ISSUER WALLET ADDRESS
                   </span>
-                  <span className="break-all text-[#113221]">{issuerAddress}</span>
+                  <span className="break-all text-[#131313]">{issuerAddress}</span>
                 </div>
 
                 <div>
-                  <span className="text-gray-500 block uppercase text-[10px] font-montserrat font-bold mb-1">
-                    On-Chain Commitment Hash
+                  <span className="text-[#6B7280] block uppercase font-bold text-[10px] mb-1">
+                    ON-CHAIN COMMITMENT HASH
                   </span>
-                  <span className="break-all text-[#E85D34] font-bold">{commitmentHash}</span>
+                  <span className="break-all text-[#FF5C00] font-bold">{commitmentHash}</span>
                 </div>
 
                 <div>
-                  <span className="text-gray-500 block uppercase text-[10px] font-montserrat font-bold mb-1">
-                    Issued Timestamp
+                  <span className="text-[#6B7280] block uppercase font-bold text-[10px] mb-1">
+                    ISSUED TIMESTAMP
                   </span>
-                  <span className="text-[#113221] font-sans">
+                  <span className="text-[#131313]">
                     {new Date(issuedAtTimestamp * 1000).toLocaleString()} ({issuedAtTimestamp})
                   </span>
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl p-6 border border-gray-200 space-y-4">
-                <h4 className="font-montserrat font-bold text-sm text-[#113221] flex items-center space-x-2">
-                  <Key className="w-4 h-4 text-[#E85D34]" />
-                  <span>Verify Off-Chain Payload Integrity</span>
+              <div className="bg-[#EAE9E4] border border-[#131313] p-6 space-y-4 font-mono">
+                <h4 className="font-archivo font-bold text-sm uppercase text-[#131313] flex items-center space-x-2">
+                  <Key className="w-4 h-4 text-[#FF5C00]" />
+                  <span>VERIFY OFF-CHAIN PAYLOAD INTEGRITY</span>
                 </h4>
-                <p className="text-xs font-inter text-gray-600">
-                  Paste the raw off-chain JSON credential payload to verify that its Keccak-256 hash matches the on-chain commitment hash.
+                <p className="text-xs uppercase text-[#333333]">
+                  Paste raw off-chain JSON credential payload to verify Keccak-256 hash match against on-chain commitment.
                 </p>
 
                 <textarea
@@ -208,28 +208,28 @@ function VerifyCredentialCardInner() {
                   value={offChainPayload}
                   onChange={(e) => setOffChainPayload(e.target.value)}
                   placeholder="Paste JSON payload here..."
-                  className="w-full p-3 rounded-xl border border-gray-300 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-[#E85D34]"
+                  className="w-full bg-white p-3 border border-[#131313] font-mono text-xs focus:outline-none focus:border-[#FF5C00]"
                 />
 
                 <button
                   onClick={handleVerifyOffChainPayload}
                   disabled={!offChainPayload.trim()}
-                  className="bg-[#113221] text-white font-montserrat font-semibold text-xs px-6 py-2.5 rounded-xl hover:bg-[#1a442e] transition-colors disabled:opacity-50"
+                  className="bg-[#131313] hover:bg-[#FF5C00] text-white hover:text-black font-mono font-bold text-xs uppercase px-6 py-2.5 border border-[#131313] transition-colors disabled:opacity-50 cursor-pointer"
                 >
-                  Verify Hash Match
+                  VERIFY HASH MATCH
                 </button>
 
                 {payloadMatchStatus === 'MATCH' && (
-                  <div className="p-4 bg-emerald-50 border border-emerald-300 rounded-xl text-emerald-900 font-montserrat font-bold text-xs flex items-center space-x-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    <span>VERIFIED MATCH! The off-chain credential data has NOT been tampered with.</span>
+                  <div className="p-4 bg-[#131313] text-white border border-[#131313] font-mono font-bold text-xs uppercase flex items-center space-x-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#FF5C00]" />
+                    <span>VERIFIED MATCH! OFF-CHAIN PAYLOAD HAS NOT BEEN TAMPERED WITH.</span>
                   </div>
                 )}
 
                 {payloadMatchStatus === 'MISMATCH' && (
-                  <div className="p-4 bg-red-50 border border-red-300 rounded-xl text-red-900 font-montserrat font-bold text-xs flex items-center space-x-2">
+                  <div className="p-4 bg-red-100 border border-red-500 text-red-900 font-mono font-bold text-xs uppercase flex items-center space-x-2">
                     <XCircle className="w-4 h-4 text-red-600" />
-                    <span>TAMPER DETECTED! Computed hash does not match the on-chain commitment.</span>
+                    <span>TAMPER DETECTED! COMPUTED HASH DOES NOT MATCH ON-CHAIN COMMITMENT.</span>
                   </div>
                 )}
               </div>
@@ -249,7 +249,7 @@ export default function VerifyCredentialCard() {
   }, []);
 
   if (!mounted) {
-    return <div className="max-w-3xl mx-auto bg-white rounded-3xl p-12 shadow-xl border border-[#113221]/10 min-h-[300px] animate-pulse" />;
+    return <div className="w-full max-w-3xl mx-auto bg-[#E2E2E2] border-2 border-[#131313] p-12 min-h-[300px] animate-pulse" />;
   }
 
   return <VerifyCredentialCardInner />;
