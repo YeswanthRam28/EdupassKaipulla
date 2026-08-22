@@ -1,9 +1,10 @@
 'use client';
 
 import Header from '@/components/Header';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import IssueCredentialForm from '@/components/web3/IssueCredentialForm';
 
-export default function IssuePage() {
+function IssuePageContent() {
   return (
     <div className="min-h-screen bg-[#EAE9E4] text-[#131313] font-mono selection:bg-[#FF5C00] selection:text-black">
       <Header />
@@ -11,5 +12,13 @@ export default function IssuePage() {
         <IssueCredentialForm />
       </main>
     </div>
+  );
+}
+
+export default function IssuePage() {
+  return (
+    <ProtectedRoute allowedRoles={['INSTITUTION', 'EMPLOYER', 'ADMIN']}>
+      <IssuePageContent />
+    </ProtectedRoute>
   );
 }

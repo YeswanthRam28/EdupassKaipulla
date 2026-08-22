@@ -2,6 +2,22 @@ import { createConfig, http, injected } from "wagmi";
 import { defineChain } from "viem";
 import { sepolia, polygonAmoy, arbitrumSepolia } from "viem/chains";
 
+// Shardeum Sphinx EVM Testnet
+export const shardeumChain = defineChain({
+  id: 8082,
+  name: "Shardeum EVM Testnet",
+  nativeCurrency: {
+    name: "Shardeum",
+    symbol: "SHM",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://dappetizer.shardeum.org/"],
+    },
+  },
+});
+
 // Local development EVM chain (Anvil / Hardhat Node on port 8545)
 export const localChain = defineChain({
   id: 31337,
@@ -30,7 +46,7 @@ function getInjectedProvider() {
 }
 
 export const wagmiConfig = createConfig({
-  chains: [localChain, sepolia, polygonAmoy, arbitrumSepolia],
+  chains: [shardeumChain, localChain, sepolia, polygonAmoy, arbitrumSepolia],
   connectors: [
     injected({
       target() {
@@ -43,6 +59,7 @@ export const wagmiConfig = createConfig({
     }),
   ],
   transports: {
+    [shardeumChain.id]: http(),
     [localChain.id]: http("http://127.0.0.1:8545"),
     [sepolia.id]: http(),
     [polygonAmoy.id]: http(),

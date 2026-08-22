@@ -11,6 +11,7 @@ export interface User {
   institution_name?: string;
   full_name: string;
   role: UserRole;
+  mobile_access_key?: string;
   is_active: boolean;
   created_at: string;
 }

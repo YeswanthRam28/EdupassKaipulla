@@ -52,6 +52,25 @@ class UserLogin(BaseModel):
     password: str
 
 
+class MobileLoginRequest(BaseModel):
+    identifier: str = Field(..., example="student@university.edu or EDU-2026-0687 or 0x...")
+    password: Optional[str] = Field(None, example="SecretPassword123")
+    device_id: Optional[str] = Field(None, example="ANDROID_HW_ID_991A")
+    device_name: Optional[str] = Field(None, example="Pixel 8 Pro")
+
+
+class MobileKeyVerifyRequest(BaseModel):
+    identifier: str = Field(..., example="EDU-2026-0687 or student@university.edu")
+    mobile_key: str = Field(..., example="EDUPASS-KEY-991A-8819-2026")
+    biometric_verified: bool = Field(default=True, example=True)
+    device_id: Optional[str] = Field(None, example="ANDROID_HW_ID_991A")
+
+
+class MobileQRAuthRequest(BaseModel):
+    qr_session_id: str = Field(..., example="qr_sess_88192")
+    student_id: str = Field(..., example="EDU-2026-0687")
+
+
 class UserResponse(BaseModel):
     id: str
     email: str
@@ -61,6 +80,7 @@ class UserResponse(BaseModel):
     institution_name: Optional[str] = None
     full_name: str
     role: UserRole
+    mobile_access_key: Optional[str] = None
     is_active: bool
     created_at: datetime
 

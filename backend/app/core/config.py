@@ -12,14 +12,17 @@ class Settings(BaseSettings):
     
     # Database: Supports PostgreSQL (postgresql://user:pass@host/db) or SQLite fallback
     DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./edupass.db")
+
+    # AI Model Settings
+    GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
     
-    # CORS
+    # CORS (Supports Localhost, Tailscale & Local WiFi LAN)
     BACKEND_CORS_ORIGINS: List[str] = [
+        "*",
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "http://100.117.215.39:3000",
-        "http://100.97.10.19:8080",
-        "http://100.97.10.19:3000",
+        "http://172.16.42.95:3000",
+        "http://172.16.42.95:8000",
     ]
 
     model_config = SettingsConfigDict(case_sensitive=True, env_file=".env")

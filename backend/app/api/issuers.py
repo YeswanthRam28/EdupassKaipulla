@@ -77,9 +77,31 @@ def revoke_issuer_accreditation(
 
 @router.get("/", response_model=List[IssuerResponse])
 def list_accredited_issuers(db: Session = Depends(get_db)):
-    """List all accredited educational institutions."""
+    """List all accredited educational institutions (including registered institution users)."""
+    # 1. Fetch from Issuer table
     issuers = db.query(Issuer).filter(Issuer.is_verified == True).order_by(Issuer.name.asc()).all()
-    return [IssuerResponse.model_validate(i) for i in issuers]
+    results = [IssuerResponse.model_validate(i) for i in issuers]
+    existing_codes = {i.accreditation_code for i in results}
+
+    # 2. Also dynamically include registered INSTITUTION users
+    inst_users = db.query(User).filter(User.role == UserRole.INSTITUTION).all()
+    for u in inst_users:
+        code = u.institution_id or f"INST-2026-{u.id[:4].upper()}"
+        if code not in existing_codes and u.full_name:
+            results.append(
+                IssuerResponse(
+                    id=u.id,
+                    name=u.institution_name or u.full_name,
+                    accreditation_code=code,
+                    country="GLOBAL",
+                    issuer_wallet=u.wallet_address,
+                    is_verified=True,
+                    created_at=u.created_at,
+                )
+            )
+            existing_codes.add(code)
+
+    return results
 
 
 @router.get("/all", response_model=List[IssuerResponse])
