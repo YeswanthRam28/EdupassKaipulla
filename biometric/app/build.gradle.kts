@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation("androidx.biometric:biometric:1.1.0")
     
     debugImplementation(libs.androidx.ui.tooling)
 }

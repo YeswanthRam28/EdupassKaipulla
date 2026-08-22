@@ -1,10 +1,11 @@
 package com.edupass.biometric.server
 
-import com.sun.net.httpserver.HttpExchange
-import com.sun.net.httpserver.HttpHandler
-import com.sun.net.httpserver.HttpServer
-import java.io.OutputStream
-import java.net.InetSocketAddress
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
+import java.io.PrintWriter
+import java.net.ServerSocket
+import java.net.Socket
 import java.util.concurrent.Executors
 
 class BiometricTriggerServer(
@@ -12,124 +13,155 @@ class BiometricTriggerServer(
     private val onRequestTrigger: (clientIp: String, callback: (Boolean, String) -> Unit) -> Unit
 ) {
 
-    private var server: HttpServer? = null
+    private var serverSocket: ServerSocket? = null
     private var isRunning = false
+    private val threadPool = Executors.newCachedThreadPool()
 
     fun start(): Boolean {
         if (isRunning) return true
-        try {
-            server = HttpServer.create(InetSocketAddress(port), 0)
-            server?.createContext("/trigger", TriggerHandler())
-            server?.createContext("/verify", TriggerHandler())
-            server?.createContext("/status", StatusHandler())
-            server?.createContext("/", StatusHandler())
-            server?.executor = Executors.newCachedThreadPool()
-            server?.start()
+        return try {
+            serverSocket = ServerSocket(port)
             isRunning = true
-            return true
+            threadPool.execute {
+                listen()
+            }
+            true
         } catch (e: Exception) {
             e.printStackTrace()
-            return false
+            false
+        }
+    }
+
+    private fun listen() {
+        while (isRunning) {
+            try {
+                val socket = serverSocket?.accept() ?: break
+                threadPool.execute {
+                    handleClient(socket)
+                }
+            } catch (e: Exception) {
+                if (!isRunning) break
+            }
+        }
+    }
+
+    private fun handleClient(socket: Socket) {
+        try {
+            socket.soTimeout = 30000
+            val remoteIp = socket.inetAddress?.hostAddress ?: "127.0.0.1"
+            val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
+            val writer = PrintWriter(OutputStreamWriter(socket.getOutputStream()), true)
+
+            val requestLine = reader.readLine() ?: return
+            val parts = requestLine.split(" ")
+            val method = parts.getOrNull(0) ?: "GET"
+            val path = parts.getOrNull(1) ?: "/"
+
+            if (method.equals("OPTIONS", ignoreCase = true)) {
+                writer.print("HTTP/1.1 204 No Content\r\n")
+                writer.print("Access-Control-Allow-Origin: *\r\n")
+                writer.print("Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n")
+                writer.print("Access-Control-Allow-Headers: Content-Type\r\n")
+                writer.print("\r\n")
+                writer.flush()
+                socket.close()
+                return
+            }
+
+            if (path.startsWith("/trigger") || path.startsWith("/verify")) {
+                val syncLock = Object()
+                var isApproved = false
+                var proofHash = ""
+
+                onRequestTrigger(remoteIp) { approved, hash ->
+                    synchronized(syncLock) {
+                        isApproved = approved
+                        proofHash = hash
+                        syncLock.notifyAll()
+                    }
+                }
+
+                synchronized(syncLock) {
+                    try {
+                        syncLock.wait(30000)
+                    } catch (e: InterruptedException) {
+                        e.printStackTrace()
+                    }
+                }
+
+                val jsonResponse = if (isApproved) {
+                    """
+                    {
+                        "status": "SUCCESS",
+                        "verified": true,
+                        "biometric_type": "FINGERPRINT_FACE_ID_ZK",
+                        "proof_hash": "$proofHash",
+                        "timestamp": ${System.currentTimeMillis()},
+                        "message": "Biometric verification completed successfully on mobile device"
+                    }
+                    """.trimIndent()
+                } else {
+                    """
+                    {
+                        "status": "FAILED",
+                        "verified": false,
+                        "error": "USER_CANCELLED_OR_TIMEOUT",
+                        "timestamp": ${System.currentTimeMillis()}
+                    }
+                    """.trimIndent()
+                }
+
+                val bytes = jsonResponse.toByteArray(Charsets.UTF_8)
+                val statusLine = if (isApproved) "HTTP/1.1 200 OK" else "HTTP/1.1 401 Unauthorized"
+
+                val os = socket.getOutputStream()
+                val header = "$statusLine\r\n" +
+                        "Access-Control-Allow-Origin: *\r\n" +
+                        "Content-Type: application/json\r\n" +
+                        "Content-Length: ${bytes.size}\r\n" +
+                        "\r\n"
+                os.write(header.toByteArray(Charsets.UTF_8))
+                os.write(bytes)
+                os.flush()
+            } else {
+                val statusJson = """
+                {
+                    "server": "EduPass Biometric Remote Trigger Engine",
+                    "status": "ACTIVE",
+                    "port": $port,
+                    "endpoints": ["/trigger", "/verify", "/status"]
+                }
+                """.trimIndent()
+
+                val bytes = statusJson.toByteArray(Charsets.UTF_8)
+                val os = socket.getOutputStream()
+                val header = "HTTP/1.1 200 OK\r\n" +
+                        "Access-Control-Allow-Origin: *\r\n" +
+                        "Content-Type: application/json\r\n" +
+                        "Content-Length: ${bytes.size}\r\n" +
+                        "\r\n"
+                os.write(header.toByteArray(Charsets.UTF_8))
+                os.write(bytes)
+                os.flush()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            try {
+                socket.close()
+            } catch (_: Exception) {}
         }
     }
 
     fun stop() {
         try {
-            server?.stop(0)
-            server = null
             isRunning = false
+            serverSocket?.close()
+            serverSocket = null
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
     fun isServerRunning(): Boolean = isRunning
-
-    private inner class TriggerHandler : HttpHandler {
-        override fun handle(exchange: HttpExchange) {
-            val remoteIp = exchange.remoteAddress.address.hostAddress ?: "127.0.0.1"
-
-            // Enable CORS for browser integration
-            exchange.responseHeaders.add("Access-Control-Allow-Origin", "*")
-            exchange.responseHeaders.add("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-            exchange.responseHeaders.add("Access-Control-Allow-Headers", "Content-Type")
-
-            if (exchange.requestMethod.equals("OPTIONS", ignoreCase = true)) {
-                exchange.sendResponseHeaders(204, -1)
-                return
-            }
-
-            // Trigger UI biometric prompt on main thread and suspend response until user scan
-            val syncLock = Object()
-            var isApproved = false
-            var proofHash = ""
-
-            onRequestTrigger(remoteIp) { approved, hash ->
-                synchronized(syncLock) {
-                    isApproved = approved
-                    proofHash = hash
-                    syncLock.notifyAll()
-                }
-            }
-
-            synchronized(syncLock) {
-                try {
-                    // Wait up to 30 seconds for user touch input on mobile phone
-                    syncLock.wait(30000)
-                } catch (e: InterruptedException) {
-                    e.printStackTrace()
-                }
-            }
-
-            val jsonResponse = if (isApproved) {
-                """
-                {
-                    "status": "SUCCESS",
-                    "verified": true,
-                    "biometric_type": "FINGERPRINT_FACE_ID_ZK",
-                    "proof_hash": "$proofHash",
-                    "timestamp": ${System.currentTimeMillis()},
-                    "message": "Biometric verification completed successfully on mobile device"
-                }
-                """.trimIndent()
-            } else {
-                """
-                {
-                    "status": "FAILED",
-                    "verified": false,
-                    "error": "USER_CANCELLED_OR_TIMEOUT",
-                    "timestamp": ${System.currentTimeMillis()}
-                }
-                """.trimIndent()
-            }
-
-            val bytes = jsonResponse.toByteArray(Charsets.UTF_8)
-            val statusCode = if (isApproved) 200 else 401
-            exchange.responseHeaders.add("Content-Type", "application/json")
-            exchange.sendResponseHeaders(statusCode, bytes.size.toLong())
-            val os: OutputStream = exchange.responseBody
-            os.write(bytes)
-            os.close()
-        }
-    }
-
-    private inner class StatusHandler : HttpHandler {
-        override fun handle(exchange: HttpExchange) {
-            exchange.responseHeaders.add("Access-Control-Allow-Origin", "*")
-            exchange.responseHeaders.add("Content-Type", "application/json")
-            val statusJson = """
-            {
-                "server": "EduPass Biometric Remote Trigger Engine",
-                "status": "ACTIVE",
-                "port": $port,
-                "endpoints": ["/trigger", "/verify", "/status"]
-            }
-            """.trimIndent()
-            val bytes = statusJson.toByteArray(Charsets.UTF_8)
-            exchange.sendResponseHeaders(200, bytes.size.toLong())
-            val os: OutputStream = exchange.responseBody
-            os.write(bytes)
-            os.close()
-        }
-    }
 }

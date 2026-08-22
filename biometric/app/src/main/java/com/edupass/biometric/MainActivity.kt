@@ -1,7 +1,6 @@
 package com.edupass.biometric
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
@@ -10,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.compose.rememberNavController
 import com.edupass.biometric.ui.components.BiometricVerificationDialog
 import com.edupass.biometric.ui.navigation.EduPassNavGraph
@@ -17,7 +17,7 @@ import com.edupass.biometric.ui.theme.EduPassTheme
 import com.edupass.biometric.ui.theme.StudioGrey
 import com.edupass.biometric.ui.viewmodel.AuthViewModel
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
     private val authViewModel: AuthViewModel by viewModels()
 

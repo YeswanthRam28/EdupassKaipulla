@@ -4,9 +4,15 @@ import java.net.Inet4Address
 import java.net.NetworkInterface
 
 object NetworkUtils {
-    const val CONFIGURED_PHONE_IP = "100.97.10.19"
-    const val CONFIGURED_LAPTOP_IP = "100.117.215.39"
-    const val DEFAULT_PORT = 8080
+    const val NGROK_BASE_URL = "https://intrusive-margit-multiovulated.ngrok-free.dev/"
+    const val CONFIGURED_LAPTOP_IP = "172.16.42.95"
+    const val BACKEND_PORT = 8000
+    const val LOCAL_WIFI_BASE_URL = "http://$CONFIGURED_LAPTOP_IP:$BACKEND_PORT/"
+    const val EMULATOR_BASE_URL = "http://10.0.2.2:$BACKEND_PORT/"
+    
+    // Primary API URL defaults to live ngrok HTTPS server
+    const val BASE_URL = NGROK_BASE_URL
+    const val DEFAULT_TRIGGER_PORT = 8080
 
     fun getLocalIpAddress(): String {
         try {
@@ -20,7 +26,12 @@ object NetworkUtils {
                     val addr = addresses.nextElement()
                     if (addr is Inet4Address && !addr.isLoopbackAddress) {
                         val host = addr.hostAddress
-                        if (host != null && host.startsWith("100.")) {
+                        if (host != null && (
+                                    host.startsWith("172.16.") ||
+                                            host.startsWith("192.168.") ||
+                                            host.startsWith("10.") ||
+                                            host.startsWith("100.")
+                                    )) {
                             return host
                         }
                     }
@@ -29,7 +40,7 @@ object NetworkUtils {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return CONFIGURED_PHONE_IP
+        return CONFIGURED_LAPTOP_IP
     }
 
     fun getLaptopIpAddress(): String = CONFIGURED_LAPTOP_IP

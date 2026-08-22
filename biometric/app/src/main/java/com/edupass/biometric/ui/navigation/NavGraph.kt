@@ -6,7 +6,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.edupass.biometric.ui.components.UserRole
 import com.edupass.biometric.ui.screens.EmployerDashboardScreen
-import com.edupass.biometric.ui.screens.HomeScreen
 import com.edupass.biometric.ui.screens.InstitutionDashboardScreen
 import com.edupass.biometric.ui.screens.LandingScreen
 import com.edupass.biometric.ui.screens.LoginScreen
