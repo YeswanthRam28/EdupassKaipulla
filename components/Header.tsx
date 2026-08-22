@@ -22,24 +22,28 @@ export default function Header() {
           +
         </div>
 
-        {/* Right Navigation & Wallet */}
+        {/* Right Navigation & Unified Wallet Login */}
         <div className="flex items-center gap-6 font-mono text-xs font-semibold uppercase tracking-wider text-[#131313]">
           <nav className="hidden md:flex items-center gap-6">
-            <Link href="/" className="hover:text-[#FF5C00] transition-colors">
-              ABOUT
+            <Link href="/zk-studio" className="hover:text-[#FF5C00] transition-colors font-bold text-[#FF5C00]">
+              ZK STUDIO
             </Link>
-            <Link href="/issue" className="hover:text-[#FF5C00] transition-colors">
-              TOOLS
+            <Link href="/student/consent" className="hover:text-[#FF5C00] transition-colors">
+              CONSENT
             </Link>
             <Link href="/verify" className="hover:text-[#FF5C00] transition-colors">
-              WORK
+              VERIFIER
             </Link>
-            <Link href="/passport" className="hover:text-[#FF5C00] transition-colors flex items-center gap-1.5">
-              <span>LET&apos;S CREATE</span>
+            <Link href="/issue" className="hover:text-[#FF5C00] transition-colors">
+              ISSUANCE
+            </Link>
+            <Link href="/dashboard" className="hover:text-[#FF5C00] transition-colors flex items-center gap-1.5">
+              <span>DASHBOARD</span>
               <span className="w-2.5 h-2.5 bg-[#FF5C00] inline-block" />
             </Link>
           </nav>
 
+          {/* Unified Web3 Wallet Connect & Login */}
           <ConnectWallet />
 
           <span className="hidden sm:inline text-base font-light text-[#131313]">+</span>

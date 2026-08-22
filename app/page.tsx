@@ -9,9 +9,9 @@ export default function Home() {
       <Header />
 
       <main className="w-full">
-        {/* HERO SECTION - Exact Match to Design Mockup */}
-        <section className="w-full border-b border-[#131313] px-6 md:px-12 py-16 md:py-24">
-          <div className="w-full max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        {/* HERO SECTION - Full Viewport Hero matching Screenshot */}
+        <section className="w-full border-b border-[#131313] min-h-[calc(100vh-65px)] flex flex-col justify-between px-6 md:px-12 py-10">
+          <div className="w-full max-w-[1440px] mx-auto my-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
             {/* Left Column: ABOUT & Description */}
             <div className="lg:col-span-3 flex flex-col justify-center gap-6">
@@ -31,7 +31,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: Location Status & Tagline */}
-            <div className="lg:col-span-3 flex flex-col justify-between items-end h-full gap-12 lg:gap-24 py-2">
+            <div className="lg:col-span-3 flex flex-col justify-between items-end h-full gap-16 lg:gap-32 py-2">
               <div className="text-right">
                 <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[#131313]">
                   LOCATION: INDIA &nbsp; STATUS: LIVE

@@ -17,6 +17,25 @@ cache/
 typechain/
 typechain-types/
 
+# Python & Virtual Environments
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+venv/
+.venv/
+env/
+.env/
+
+# Android & Gradle Build Artifacts
+.gradle/
+biometric/.gradle/
+biometric/build/
+biometric/app/build/
+*.apk
+*.aar
+
 # TypeScript
 tsconfig.tsbuildinfo
 *.tsbuildinfo
@@ -28,7 +47,9 @@ tsconfig.tsbuildinfo
 .env.development.local
 .env.test.local
 .env.production.local
-!.env.example
+backend/.env
+backend/*.db
+*.db
 
 # Logs & Diagnostics
 *.log

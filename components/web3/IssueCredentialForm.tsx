@@ -1,70 +1,75 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { keccak256, stringToBytes } from 'viem';
-import { CREDENTIAL_REGISTRY_ADDRESS, CREDENTIAL_REGISTRY_ABI } from '@/web3/contracts';
-import { ShieldCheck, CheckCircle2, Copy, AlertTriangle, Building2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useAccount } from 'wagmi';
+import { useAuth } from '@/lib/auth/context';
+import { ShieldCheck, CheckCircle2, Copy, AlertCircle, Building2, ArrowRight } from 'lucide-react';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 function IssueCredentialFormInner() {
   const { isConnected, address } = useAccount();
+  const { token, user } = useAuth();
   
   const [studentId, setStudentId] = useState('EDU-2026-9283');
+  const [studentName, setStudentName] = useState('Jane Doe');
   const [degree, setDegree] = useState('B.Tech Computer Science');
   const [cgpa, setCgpa] = useState('8.47');
   const [credits, setCredits] = useState('142');
   const [studentWallet, setStudentWallet] = useState('');
   
-  const [generatedPayload, setGeneratedPayload] = useState<any>(null);
-  const [copiedPayload, setCopiedPayload] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [issuedResult, setIssuedResult] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [copiedHash, setCopiedHash] = useState(false);
 
-  const { data: hash, isPending, error, writeContract } = useWriteContract();
-
-  const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
-    hash,
-  });
-
-  const handleCreateCredential = (e: React.FormEvent) => {
+  const handleCreateCredential = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setIssuedResult(null);
 
-    if (!isConnected || !address) {
-      alert('Please connect your institution wallet first.');
+    if (!studentId.trim() || !studentName.trim() || !degree.trim()) {
+      setError('Please fill in all required fields.');
       return;
     }
 
-    const payload = {
-      credentialId: studentId.trim(),
-      issuer: address,
-      studentWallet: studentWallet.trim() || address,
-      degree: degree.trim(),
-      cgpa: parseFloat(cgpa),
-      credits: parseInt(credits, 10),
-      issuedAt: new Date().toISOString(),
-    };
+    setIsSubmitting(true);
 
-    const credentialIdBytes32 = keccak256(stringToBytes(payload.credentialId));
-    const payloadJsonString = JSON.stringify(payload);
-    const commitmentBytes32 = keccak256(stringToBytes(payloadJsonString));
+    try {
+      const res = await fetch(`${API_BASE}/credentials/issue`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          student_id: studentId.trim(),
+          student_name: studentName.trim(),
+          degree: degree.trim(),
+          cgpa: parseFloat(cgpa),
+          credits: parseInt(credits, 10),
+          student_wallet: studentWallet.trim() || (address ? address.toLowerCase() : undefined),
+        }),
+      });
 
-    setGeneratedPayload({
-      ...payload,
-      credentialIdBytes32,
-      commitmentBytes32,
-      rawJson: payloadJsonString,
-    });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ detail: 'Issuance failed' }));
+        throw new Error(errorData.detail || 'Could not issue credential.');
+      }
 
-    writeContract({
-      address: CREDENTIAL_REGISTRY_ADDRESS,
-      abi: CREDENTIAL_REGISTRY_ABI,
-      functionName: 'registerCredential',
-      args: [credentialIdBytes32, commitmentBytes32],
-    });
+      const data = await res.json();
+      setIssuedResult(data);
+    } catch (err: any) {
+      setError(err.message || 'Error connecting to issuance service.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    setCopiedPayload(true);
-    setTimeout(() => setCopiedPayload(false), 2000);
+    setCopiedHash(true);
+    setTimeout(() => setCopiedHash(false), 2000);
   };
 
   return (
@@ -83,157 +88,176 @@ function IssueCredentialFormInner() {
         </div>
       </div>
 
-      {!isConnected ? (
-        <div className="bg-[#FF5C00] border border-[#131313] p-6 text-[#131313] text-xs font-mono uppercase flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 shrink-0" />
-          <span>PLEASE CONNECT YOUR INSTITUTION WALLET USING THE CONNECT WALLET BUTTON BEFORE PROCEEDING.</span>
+      {/* Warning if not logged in or not institution */}
+      {user?.role && user.role !== 'INSTITUTION' && user.role !== 'ADMIN' && (
+        <div className="bg-[#FF5C00] text-black p-4 border border-[#131313] text-xs font-mono uppercase font-bold flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>Note: You are currently logged in as {user.role}. Standard authorization requires INSTITUTION or ADMIN role.</span>
         </div>
-      ) : (
-        <form onSubmit={handleCreateCredential} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#131313] mb-2">
-                Credential / Student ID
-              </label>
-              <input
-                type="text"
-                value={studentId}
-                onChange={(e) => setStudentId(e.target.value)}
-                required
-                className="w-full bg-[#EAE9E4] px-4 py-3 border border-[#131313] font-mono text-xs focus:outline-none focus:border-[#FF5C00] uppercase"
-                placeholder="e.g. EDU-2026-001"
-              />
-            </div>
+      )}
 
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#131313] mb-2">
-                Degree / Qualification
-              </label>
-              <input
-                type="text"
-                value={degree}
-                onChange={(e) => setDegree(e.target.value)}
-                required
-                className="w-full bg-[#EAE9E4] px-4 py-3 border border-[#131313] font-mono text-xs focus:outline-none focus:border-[#FF5C00] uppercase"
-                placeholder="e.g. B.Tech Computer Science"
-              />
-            </div>
+      {error && (
+        <div className="bg-red-100 border border-red-500 text-red-900 p-4 text-xs font-mono uppercase flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
+          <span>{error}</span>
+        </div>
+      )}
 
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#131313] mb-2">
-                CGPA (10-Point Scale)
-              </label>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                max="10"
-                value={cgpa}
-                onChange={(e) => setCgpa(e.target.value)}
-                required
-                className="w-full bg-[#EAE9E4] px-4 py-3 border border-[#131313] font-mono text-xs focus:outline-none focus:border-[#FF5C00]"
-                placeholder="8.50"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#131313] mb-2">
-                Total Credits Earned
-              </label>
-              <input
-                type="number"
-                value={credits}
-                onChange={(e) => setCredits(e.target.value)}
-                required
-                className="w-full bg-[#EAE9E4] px-4 py-3 border border-[#131313] font-mono text-xs focus:outline-none focus:border-[#FF5C00]"
-                placeholder="142"
-              />
-            </div>
+      <form onSubmit={handleCreateCredential} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#131313] mb-2">
+              1. STUDENT ID *
+            </label>
+            <input
+              type="text"
+              value={studentId}
+              onChange={(e) => setStudentId(e.target.value)}
+              required
+              className="w-full bg-[#EAE9E4] px-4 py-3 border border-[#131313] font-mono text-xs focus:outline-none focus:border-[#FF5C00] uppercase"
+              placeholder="e.g. EDU-2026-9283"
+            />
           </div>
 
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-[#131313] mb-2">
-              Student Wallet Address (Optional)
+              2. STUDENT FULL NAME *
+            </label>
+            <input
+              type="text"
+              value={studentName}
+              onChange={(e) => setStudentName(e.target.value)}
+              required
+              className="w-full bg-[#EAE9E4] px-4 py-3 border border-[#131313] font-mono text-xs focus:outline-none focus:border-[#FF5C00] uppercase"
+              placeholder="e.g. Jane Doe"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#131313] mb-2">
+              3. DEGREE / QUALIFICATION *
+            </label>
+            <input
+              type="text"
+              value={degree}
+              onChange={(e) => setDegree(e.target.value)}
+              required
+              className="w-full bg-[#EAE9E4] px-4 py-3 border border-[#131313] font-mono text-xs focus:outline-none focus:border-[#FF5C00] uppercase"
+              placeholder="e.g. B.Tech Computer Science"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#131313] mb-2">
+              4. CGPA (10-POINT SCALE) *
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              max="10"
+              value={cgpa}
+              onChange={(e) => setCgpa(e.target.value)}
+              required
+              className="w-full bg-[#EAE9E4] px-4 py-3 border border-[#131313] font-mono text-xs focus:outline-none focus:border-[#FF5C00]"
+              placeholder="8.47"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#131313] mb-2">
+              5. TOTAL CREDITS EARNED *
+            </label>
+            <input
+              type="number"
+              value={credits}
+              onChange={(e) => setCredits(e.target.value)}
+              required
+              className="w-full bg-[#EAE9E4] px-4 py-3 border border-[#131313] font-mono text-xs focus:outline-none focus:border-[#FF5C00]"
+              placeholder="142"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#131313] mb-2">
+              6. STUDENT WALLET ADDRESS (OPTIONAL)
             </label>
             <input
               type="text"
               value={studentWallet}
               onChange={(e) => setStudentWallet(e.target.value)}
               className="w-full bg-[#EAE9E4] px-4 py-3 border border-[#131313] font-mono text-xs focus:outline-none focus:border-[#FF5C00]"
-              placeholder="0x... (Defaults to issuer wallet if empty)"
+              placeholder="0x... (Linked for automatic student passport delivery)"
             />
           </div>
+        </div>
 
-          <div className="pt-4">
+        <div className="pt-4">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-[#131313] hover:bg-[#FF5C00] text-white hover:text-black font-mono font-bold text-xs uppercase tracking-widest py-4 border border-[#131313] transition-all flex items-center justify-center space-x-3 cursor-pointer disabled:opacity-50"
+          >
+            <ShieldCheck className="w-4 h-4 text-[#FF5C00]" />
+            <span>{isSubmitting ? 'GENERATING CRYPTOGRAPHIC COMMITMENT...' : 'REGISTER & ISSUE CREDENTIAL BY STUDENT ID'}</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      </form>
+
+      {/* Issued Credential Result Card */}
+      {issuedResult && (
+        <div className="bg-[#131313] text-white border-2 border-[#131313] p-6 md:p-8 space-y-6">
+          <div className="flex justify-between items-center border-b border-gray-700 pb-4">
+            <div className="flex items-center gap-2 font-bold uppercase text-[#FF5C00]">
+              <CheckCircle2 className="w-5 h-5 text-[#FF5C00]" />
+              <span className="text-sm">CREDENTIAL ISSUED & VERIFIED ON-CHAIN</span>
+            </div>
             <button
-              type="submit"
-              disabled={isPending || isConfirming}
-              className="w-full bg-[#131313] hover:bg-[#FF5C00] text-white hover:text-black font-mono font-bold text-xs uppercase tracking-widest py-4 border border-[#131313] transition-all flex items-center justify-center space-x-3 cursor-pointer disabled:opacity-50"
+              onClick={() => copyToClipboard(issuedResult.commitment_hash)}
+              className="flex items-center gap-1.5 text-xs text-white hover:text-[#FF5C00] bg-gray-800 px-3 py-1.5 border border-gray-700 transition-colors cursor-pointer"
             >
-              <ShieldCheck className="w-4 h-4" />
-              <span>
-                {isPending
-                  ? 'AWAITING METAMASK APPROVAL...'
-                  : isConfirming
-                  ? 'CONFIRMING ON-CHAIN TRANSACTION...'
-                  : 'REGISTER CREDENTIAL ON-CHAIN'}
-              </span>
+              <Copy className="w-3.5 h-3.5" />
+              <span>{copiedHash ? 'COPIED HASH!' : 'COPY COMMITMENT HASH'}</span>
             </button>
           </div>
-        </form>
-      )}
 
-      {hash && (
-        <div className="bg-[#EAE9E4] border border-[#131313] p-6 space-y-4 font-mono text-xs">
-          <div className="flex items-center space-x-2 font-bold uppercase text-[#131313]">
-            <CheckCircle2 className="w-4 h-4 text-[#FF5C00]" />
-            <span>TRANSACTION BROADCASTED TO BLOCKCHAIN</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+            <div>
+              <span className="text-gray-400 block uppercase">CREDENTIAL ID:</span>
+              <span className="font-bold text-white uppercase">{issuedResult.id}</span>
+            </div>
+
+            <div>
+              <span className="text-gray-400 block uppercase">STUDENT ID:</span>
+              <span className="font-bold text-[#FF5C00] uppercase">{issuedResult.student_id}</span>
+            </div>
+
+            <div>
+              <span className="text-gray-400 block uppercase">STUDENT NAME:</span>
+              <span className="font-bold text-white uppercase">{issuedResult.student_name}</span>
+            </div>
+
+            <div>
+              <span className="text-gray-400 block uppercase">DEGREE / CGPA:</span>
+              <span className="font-bold text-white uppercase">{issuedResult.degree} ({issuedResult.cgpa} CGPA)</span>
+            </div>
+
+            <div>
+              <span className="text-gray-400 block uppercase">ISSUING INSTITUTION:</span>
+              <span className="font-bold text-white uppercase">{issuedResult.institution_name}</span>
+            </div>
+
+            <div>
+              <span className="text-gray-400 block uppercase">ISSUED TIMESTAMP:</span>
+              <span className="font-bold text-white uppercase">{new Date(issuedResult.issued_at).toLocaleString()}</span>
+            </div>
           </div>
 
-          <p className="break-all bg-[#E2E2E2] p-3 border border-[#131313]">
-            <strong>TX HASH:</strong> {hash}
-          </p>
-
-          {isConfirming && (
-            <p className="text-[#FF5C00] font-bold uppercase animate-pulse">
-              WAITING FOR BLOCK CONFIRMATION...
-            </p>
-          )}
-
-          {isConfirmed && (
-            <div className="pt-4 border-t border-[#131313] space-y-4">
-              <span className="inline-block bg-[#131313] text-white font-mono text-xs font-bold px-3 py-1 border border-[#131313] uppercase">
-                ✓ CONFIRMED ON-CHAIN
-              </span>
-
-              {generatedPayload && (
-                <div className="bg-[#131313] text-white p-4 border border-[#131313] font-mono text-xs space-y-2 relative">
-                  <div className="flex justify-between items-center border-b border-gray-700 pb-2">
-                    <span className="text-[#FF5C00] font-bold uppercase">OFF-CHAIN PAYLOAD (KEEP CONFIDENTIAL)</span>
-                    <button
-                      onClick={() => copyToClipboard(generatedPayload.rawJson)}
-                      className="flex items-center space-x-1 text-white hover:text-[#FF5C00] transition-colors"
-                    >
-                      <Copy className="w-3.5 h-3.5" />
-                      <span>{copiedPayload ? 'COPIED!' : 'COPY JSON'}</span>
-                    </button>
-                  </div>
-                  <div><strong>CREDENTIAL ID:</strong> {generatedPayload.credentialIdBytes32}</div>
-                  <div><strong>COMMITMENT HASH:</strong> {generatedPayload.commitmentBytes32}</div>
-                  <pre className="text-gray-300 overflow-x-auto text-[11px] pt-2">
-                    {JSON.stringify(generatedPayload, null, 2)}
-                  </pre>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
-      {error && (
-        <div className="bg-red-100 border border-red-500 p-4 text-red-900 text-xs font-mono space-y-1">
-          <strong>TRANSACTION ERROR:</strong>
-          <p>{error.message}</p>
+          <div className="bg-[#1A1A1A] p-4 border border-gray-800 space-y-1">
+            <span className="text-[10px] text-gray-400 font-bold uppercase block">CRYPTOGRAPHIC COMMITMENT HASH (SHA-256):</span>
+            <p className="text-xs font-mono text-[#FF5C00] break-all font-bold">{issuedResult.commitment_hash}</p>
+          </div>
         </div>
       )}
     </div>
